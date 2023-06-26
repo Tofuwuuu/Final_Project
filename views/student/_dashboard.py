@@ -27,6 +27,7 @@ class DashboardFrame(ctk.CTkFrame):
         self.ConsultationImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.consultation_dark), dark_image=res.fetch_image(res.images.nav_ico.consultation_light), size=(80, 80))
         self.NotifImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.notif_dark), dark_image=res.fetch_image(res.images.nav_ico.notif_light), size=(20, 20))
         self.AlertNotifImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.alert_notif_dark), dark_image=res.fetch_image(res.images.nav_ico.alert_notif_light), size=(20, 20))
+        self.GoNextImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.go_next_dark), dark_image=res.fetch_image(res.images.nav_ico.go_next_light), size=(20, 20))
         """ End of resource pathing """
 
         # Styling as row-stretch
@@ -36,6 +37,7 @@ class DashboardFrame(ctk.CTkFrame):
         # Theme design, because I can't setup json file for custom theme installation using set_default_theme.
         self.THEME_GREEN = self.master.THEME_GREEN
         self.THEME_YELLOW = self.master.THEME_YELLOW
+        self.THEME_BLUE = self.master.THEME_BLUE
         self.THEME_DARKGREEN = self.master.THEME_DARKGREEN
         self.DEFAULT = self.master.DEFAULT
 
@@ -134,7 +136,6 @@ class DashboardFrame(ctk.CTkFrame):
         self.ConInfoLabel = ctk.CTkLabel(master=self.ConInfoWrapper, text="No details selected", font=ctk.CTkFont(family="Poppins", size=20, weight="bold"))
         self.ConInfoLabel.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-
         # ConWrapper | Upcoming Consultations Label
         self.UpcomingConsultationsLabel = ctk.CTkLabel(self.ConWrapper, text="Upcoming Consultations", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
         self.UpcomingConsultationsLabel.grid(row=0, column=0, pady=20, padx=20, sticky="w")
@@ -152,16 +153,8 @@ class DashboardFrame(ctk.CTkFrame):
 
         _cache_frame = []
         _cache_inner_frame = []
-        _cache_inner_label = []
-        _cache_inner_date = []
         _cache_teacher_frame = []
-        _cache_teacher_label = []
-        _cache_session = []
         _cache_info_frame = []
-        _cache_sched_name = []
-        _cache_sched_status = []
-        _cache_sched_details = []
-        _cache_redirect = []
 
         # Sort by username of the teacher
         sorted_faculty = sorted(account_history, key=lambda x: x["teacher"])
@@ -172,52 +165,43 @@ class DashboardFrame(ctk.CTkFrame):
 
         # Iteration to place dynamic data in the frame
         for idx in range(len(upcoming_data)):
-            print(upcoming_data[idx])
             
             # Initializing cache variables
             _cache_frame.append("_cache_frame_".join(str(idx)))
             _cache_inner_frame.append("_cache_inner_frame_".join(str(idx)))
-            _cache_inner_label.append("_cache_inner_label_".join(str(idx)))
-            _cache_inner_date.append("_cache_inner_date_".join(str(idx)))
             _cache_teacher_frame.append("_cache_teacher_frame_".join(str(idx)))
-            _cache_teacher_label.append("_cache_teacher_label_".join(str(idx)))
-            _cache_session.append("_cache_session_".join(str(idx)))
             _cache_info_frame.append("_cache_info_frame_".join(str(idx)))
-            _cache_sched_name.append("_cache_sched_name_".join(str(idx)))
-            _cache_sched_status.append("_cache_sched_status_".join(str(idx)))
-            _cache_sched_details.append("_cache_sched_details_".join(str(idx)))
-            _cache_redirect.append("_cache_redirect_".join(str(idx)))
 
             # Main frame
-            _cache_frame[idx] = ctk.CTkFrame(master=self.ConListWrapper, fg_color=self.THEME_YELLOW)
+            _cache_frame[idx] = ctk.CTkFrame(master=self.ConListWrapper, fg_color=self.THEME_GREEN)
             _cache_frame[idx].grid(row=idx, column=0, pady=5, padx=5, sticky="nsew")
             _cache_frame[idx].grid_columnconfigure(3, weight=1)
             _cache_frame[idx].grid_rowconfigure(2, weight=1)
 
             # Inner frame for date
-            _cache_inner_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color=self.THEME_DARKGREEN)
+            _cache_inner_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color="transparent")
             _cache_inner_frame[idx].grid(row=0, column=0, padx=10, pady=10, sticky="nsw")
             _cache_inner_frame[idx].grid_columnconfigure(0, weight=1)
             _cache_inner_frame[idx].grid_rowconfigure(0, weight=1)
 
-            # Inner day label
-            _cache_inner_label[idx] = ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%d')}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
-            _cache_inner_label[idx].grid(row=0, column=0, sticky="nsew")
-
-            # Inner Month
-            _cache_inner_date[idx] = ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%B')}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
-            _cache_inner_date[idx].grid(row=1, column=0, sticky="nsew")
-
             # Inner frame for Schedule Info
-            _cache_teacher_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color=self.THEME_DARKGREEN)
+            _cache_teacher_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color="transparent")
             _cache_teacher_frame[idx].grid(row=0, column=1, padx=10, pady=10, sticky="nsw")
             _cache_teacher_frame[idx].grid_columnconfigure(0, weight=1)
             _cache_teacher_frame[idx].grid_rowconfigure(0, weight=1)
 
-            #Inner Teacher Text
-            _cache_teacher_label[idx] = ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{upcoming_data[idx]['teacher']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
-            _cache_teacher_label[idx].grid(row=0, column=0, sticky="nsew")
+            # Inner frame for Informations
+            _cache_info_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color="transparent")
+            _cache_info_frame[idx].grid(row=0, column=2, padx=10, pady=10, sticky="nsw")
+            _cache_info_frame[idx].grid_columnconfigure(0, weight=1)
+            _cache_info_frame[idx].grid_rowconfigure(0, weight=1)
 
+            # Inner day label
+            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%d')}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
+            # Inner Month
+            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%B')}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=1, column=0, sticky="nsew")
+            #Inner Teacher Text
+            ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{upcoming_data[idx]['teacher']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
 
             # timedelta lost my sanity. It is not even a timezone conversion wtf.
             session_start = upcoming_data[idx]['open_at']
@@ -239,19 +223,10 @@ class DashboardFrame(ctk.CTkFrame):
             formatted_time = f"{start_time_obj.strftime('%I:%M %p')} - {end_time_obj.strftime('%I:%M %p')}"
 
             # Inner TimeSpan in TeacherWrapper
-            _cache_session[idx] = ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{formatted_time}", text_color="white", font=ctk.CTkFont(family="Poppins", size=10))
-            _cache_session[idx].grid(row=1, column=0, sticky="nsew")
-
-            # Inner frame for Informations
-            _cache_info_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color=self.THEME_DARKGREEN)
-            _cache_info_frame[idx].grid(row=0, column=2, padx=10, pady=10, sticky="nsw")
-            _cache_info_frame[idx].grid_columnconfigure(0, weight=1)
-            _cache_info_frame[idx].grid_rowconfigure(0, weight=1)
-
+            ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{formatted_time}", text_color="white", font=ctk.CTkFont(family="Poppins", size=10)).grid(row=1, column=0, sticky="nsew")
             # Inner TimeSpan in TeacherWrapper
-            _cache_sched_name[idx] = ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{upcoming_data[idx]['task_name']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=12))
-            _cache_sched_name[idx].grid(row=0, column=0, sticky="nsew")
-
+            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{upcoming_data[idx]['task_name']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=12)).grid(row=0, column=0, sticky="nsew")
             # Inner TimeSpan in TeacherWrapper
-            _cache_sched_status[idx] = ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{upcoming_data[idx]['status']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=10))
-            _cache_sched_status[idx].grid(row=1, column=0, sticky="nsew")
+            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{upcoming_data[idx]['status']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=10)).grid(row=1, column=0, sticky="nsew")
+            # Button gg go next
+            ctk.CTkButton(master=_cache_frame[idx], image=self.GoNextImage, text=None, fg_color=self.THEME_YELLOW).grid(row=0, column=3, padx=20, pady=10, sticky="e")

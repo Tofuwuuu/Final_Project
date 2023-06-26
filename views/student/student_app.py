@@ -3,8 +3,6 @@ This is a frame file. You can't run this file as a "__main__".
 """
 
 import customtkinter as ctk
-import os
-from PIL import Image
 from ._dashboard import DashboardFrame
 from ._faculty import FacultyFrame
 from ._calendar import CalendarFrame
@@ -18,6 +16,8 @@ ctk.set_appearance_mode("light")  # Modes: "System" (standard), "Dark", "Light"
 ctk.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 class StudentApp(ctk.CTk):
+
+    selected_panel = ""
     
     def __init__(self, user_data: list):
       
@@ -31,6 +31,7 @@ class StudentApp(ctk.CTk):
         # Theme design, because I can't setup json file for custom theme installation using set_default_theme.
         self.THEME_GREEN = ("#95D5B2", "#081c15")
         self.THEME_YELLOW = ("#Fdf0d5", "#081c15")
+        self.THEME_BLUE = ("#DFE9F1", "#DFE9F1")
         self.THEME_DARKGREEN = ("#80B699", "#1F664D")
         self.DEFAULT = ('white', '#242424')
 
@@ -153,7 +154,7 @@ class StudentApp(ctk.CTk):
         init_app.init.mainloop()
 
     # method for changing panel views
-    def SelectedPanel(self, name):
+    def SelectedPanel(self, name) -> None:
 
         # Clean selected frame on call
         frames = [self.ToDashboard, self.ToFaculty, self.ToCalendar, self.ToConsultation, self.ToSettings]
@@ -162,44 +163,66 @@ class StudentApp(ctk.CTk):
 
         # Display selected frame
         if name == "dashboard":
-            # Display
-            self.DashboardPanel.grid(row=0, column=1, sticky="nsew")
-            self.DashboardPanel.UpdateUpcoming(account=self.user_data['account_id'])
-            # Show as "selected button"
-            self.ToDashboard.configure(fg_color=("gray75", "gray25"))
+            if self.selected_panel != name:
+                # Display
+                self.DashboardPanel.grid(row=0, column=1, sticky="nsew")
+                self.DashboardPanel.UpdateUpcoming(account=self.user_data['account_id'])
+                # Show as "selected button"
+                self.ToDashboard.configure(fg_color=("gray75", "gray25"))
+                
+                self.selected_panel = name
+            else:
+                pass
         else:
             self.DashboardPanel.grid_forget()
 
         if name == "faculty":
-            # Display
-            self.FacultyPanel.grid(row=0, column=1, sticky="nsew")
-            # Show as "selected button"
-            self.ToFaculty.configure(fg_color=("gray75", "gray25"))
+            if self.selected_panel != name:
+                # Display
+                self.FacultyPanel.grid(row=0, column=1, sticky="nsew")
+                self.FacultyPanel.DisplayFaculty()
+                # Show as "selected button"
+                self.ToFaculty.configure(fg_color=("gray75", "gray25"))
+                self.selected_panel = name
+            else:
+                pass
         else:
             self.FacultyPanel.grid_forget()
 
         if name == "calendar":
-            # Display
-            self.CalendarPanel.grid(row=0, column=1, sticky="nsew")
-            # Show as "selected button"
-            self.ToCalendar.configure(fg_color=("gray75", "gray25"))
+            if self.selected_panel != name:
+                # Display
+                self.CalendarPanel.grid(row=0, column=1, sticky="nsew")
+                # Show as "selected button"
+                self.ToCalendar.configure(fg_color=("gray75", "gray25"))
+                self.selected_panel = name
+            else:
+                pass
             
         else:
             self.CalendarPanel.grid_forget()
 
         if name == "consultation":
-            # Display
-            self.ConsultationPanel.grid(row=0, column=1, sticky="nsew")
-            # Show as "selected button"
-            self.ToConsultation.configure(fg_color=("gray75", "gray25"))
+            if self.selected_panel != name:
+                # Display
+                self.ConsultationPanel.grid(row=0, column=1, sticky="nsew")
+                # Show as "selected button"
+                self.ToConsultation.configure(fg_color=("gray75", "gray25"))
+                self.selected_panel = name
+            else:
+                pass
         else:
             self.ConsultationPanel.grid_forget()
 
         if name == "settings":
-            # Display
-            self.SettingsPanel.grid(row=0, column=1, sticky="nsew")
-            # Show as "selected button"
-            self.ToSettings.configure(fg_color=("gray75", "gray25"))
+            if self.selected_panel != name:
+                # Display
+                self.SettingsPanel.grid(row=0, column=1, sticky="nsew")
+                # Show as "selected button"
+                self.ToSettings.configure(fg_color=("gray75", "gray25"))
+                self.selected_panel = name
+            else:
+                pass
         else:
             self.SettingsPanel.grid_forget()
 

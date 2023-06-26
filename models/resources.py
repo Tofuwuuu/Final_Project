@@ -14,8 +14,10 @@ _image_nav_path = _image_path + "nav-icons\\"
 __image_cache = {}
 
 class constants:
-    WIN_WIDTH = 900
-    WIN_HEIGHT = 600
+    WIN_SMALL_WIDTH = 900
+    WIN_SMALL_HEIGHT = 600
+    WIN_WIDTH = 1200
+    WIN_HEIGHT = 800
 
 class fonts:
     pass
@@ -53,6 +55,8 @@ class images:
         logout_light = _image_nav_path +  "logout-light.png"
         search_dark = _image_nav_path + "search-dark.png"
         search_light = _image_nav_path + "search-light.png"
+        go_next_dark  = _image_nav_path + "go-next-dark.png"
+        go_next_light  = _image_nav_path + "go-next-light.png"
     #ico
     window_icon = _image_path + "window-icon.ico"
 
