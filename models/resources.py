@@ -57,6 +57,8 @@ class images:
         search_light = _image_nav_path + "search-light.png"
         go_next_dark  = _image_nav_path + "go-next-dark.png"
         go_next_light  = _image_nav_path + "go-next-light.png"
+        add_dark = _image_nav_path + "add-dark.png"
+        add_light = _image_nav_path + "add-light.png"
     #ico
     window_icon = _image_path + "window-icon.ico"
 

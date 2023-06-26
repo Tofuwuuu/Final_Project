@@ -7,7 +7,7 @@ import customtkinter as ctk
 import tkinter as tk
 import models.resources as res
 
-class SettingFrame(ctk.CTkFrame):
+class CreationFrame(ctk.CTkFrame):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -7,7 +7,7 @@ from ._dashboard import DashboardFrame
 from ._faculty import FacultyFrame
 from ._calendar import CalendarFrame
 from ._consultation import ConsultationFrame
-from ._settings import SettingFrame
+from ._create import CreationFrame
 from models.db_system import DBSystem
 from .. import init_app
 import models.resources as res
@@ -44,9 +44,9 @@ class StudentApp(ctk.CTk):
         self.FacultyImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.faculty_dark), dark_image=res.fetch_image(res.images.nav_ico.faculty_light), size=(20, 20))
         self.CalendarImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.calendar_dark), dark_image=res.fetch_image(res.images.nav_ico.calendar_light), size=(20, 20))
         self.ConsultationImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.consultation_dark), dark_image=res.fetch_image(res.images.nav_ico.consultation_light), size=(20, 20))
-        self.SettingImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.settings_dark), dark_image=res.fetch_image(res.images.nav_ico.settings_light), size=(20, 20))
         self.MenuSliderImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.menu_dark), dark_image=res.fetch_image(res.images.nav_ico.menu_light), size=(20, 20))
         self.LogoutImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.logout_dark), dark_image=res.fetch_image(res.images.nav_ico.logout_light), size=(20, 20))
+        self.AddImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.add_dark), dark_image=res.fetch_image(res.images.nav_ico.add_light), size=(20, 20))
 
         """ End of resource pathing """
 
@@ -90,9 +90,9 @@ class StudentApp(ctk.CTk):
         self.ToConsultation = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="My Consultations", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.ConsultationImage, anchor="w", command=lambda: self.SelectedPanel("consultation"))
         self.ToConsultation.grid(row=5, column=0, sticky="ew")
 
-        # Slide panel | Settings Button
-        self.ToSettings = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Settings", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.SettingImage, anchor="w", command=lambda: self.SelectedPanel("settings"))
-        self.ToSettings.grid(row=6, column=0, sticky="ew")
+        # Slide panel | Creation Button
+        self.ToCreation = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Create Consultation", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.AddImage, anchor="w", command=lambda: self.SelectedPanel("creation"))
+        self.ToCreation.grid(row=6, column=0, sticky="ew")
 
         # Slide panel | Theme Dropdown
         self.ThemeMode = ctk.CTkOptionMenu(self.SlidePanel, values=["Light", "Dark"], command=lambda mode: ctk.set_appearance_mode(mode), fg_color=self.THEME_DARKGREEN, dropdown_fg_color=self.THEME_DARKGREEN, button_color=self.THEME_DARKGREEN, button_hover_color=self.THEME_DARKGREEN, text_color=("black", "white"))
@@ -111,8 +111,8 @@ class StudentApp(ctk.CTk):
         self.CalendarPanel = CalendarFrame(master=self, corner_radius=0, fg_color=self.DEFAULT)
         # Consultation | Consultation Panel - Implementation and Configurations on ./_consultation.py
         self.ConsultationPanel = ConsultationFrame(master=self, corner_radius=0, fg_color=self.DEFAULT)
-        # Settings | Settings Panel - Implementation and Configurations on ./_settings.py
-        self.SettingsPanel = SettingFrame(master=self, corner_radius=0, fg_color=self.DEFAULT)
+        # Creation | Creation Panel - Implementation and Configurations on ./_Creation.py
+        self.CreationPanel = CreationFrame(master=self, corner_radius=0, fg_color=self.DEFAULT)
 
         # Default Window Frame on load
         self.SelectedPanel("dashboard")
@@ -126,7 +126,7 @@ class StudentApp(ctk.CTk):
             self.ToFaculty.configure(text="Faculty Schedules", anchor="w")
             self.ToCalendar.configure(text="Calendar", anchor="w")
             self.ToConsultation.configure(text="My Consultations", anchor="w")
-            self.ToSettings.configure(text="Settings", anchor="w")
+            self.ToCreation.configure(text="Creation", anchor="w")
             self.Logout.configure(text="Logout", anchor="w")
             self.Logout.grid(row=8, column=0, pady=5, padx=5, sticky="s")
 
@@ -140,7 +140,7 @@ class StudentApp(ctk.CTk):
             self.ToFaculty.configure(text=None, anchor="center")
             self.ToCalendar.configure(text=None, anchor="center")
             self.ToConsultation.configure(text=None, anchor="center")
-            self.ToSettings.configure(text=None, anchor="center")
+            self.ToCreation.configure(text=None, anchor="center")
             self.Logout.configure(text=None, anchor="center")
 
             self.ThemeMode.configure(values=[])
@@ -157,7 +157,7 @@ class StudentApp(ctk.CTk):
     def SelectedPanel(self, name) -> None:
 
         # Clean selected frame on call
-        frames = [self.ToDashboard, self.ToFaculty, self.ToCalendar, self.ToConsultation, self.ToSettings]
+        frames = [self.ToDashboard, self.ToFaculty, self.ToCalendar, self.ToConsultation, self.ToCreation]
         for f in frames:
             f.configure(fg_color="transparent")
 
@@ -214,17 +214,17 @@ class StudentApp(ctk.CTk):
         else:
             self.ConsultationPanel.grid_forget()
 
-        if name == "settings":
+        if name == "Creation":
             if self.selected_panel != name:
                 # Display
-                self.SettingsPanel.grid(row=0, column=1, sticky="nsew")
+                self.CreationPanel.grid(row=0, column=1, sticky="nsew")
                 # Show as "selected button"
-                self.ToSettings.configure(fg_color=("gray75", "gray25"))
+                self.ToCreation.configure(fg_color=("gray75", "gray25"))
                 self.selected_panel = name
             else:
                 pass
         else:
-            self.SettingsPanel.grid_forget()
+            self.CreationPanel.grid_forget()
 
 
 # This is used to initialize the student application window in the login method -> ValidateUser
