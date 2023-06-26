@@ -30,7 +30,7 @@ class StudentApp(ctk.CTk):
 
         # Theme design, because I can't setup json file for custom theme installation using set_default_theme.
         self.THEME_GREEN = ("#95D5B2", "#081c15")
-        self.THEME_YELLOW = ("#Fdf0d5", "#Fdf0d5")
+        self.THEME_YELLOW = ("#Fdf0d5", "#081c15")
         self.THEME_DARKGREEN = ("#80B699", "#1F664D")
         self.DEFAULT = ('white', '#242424')
 
