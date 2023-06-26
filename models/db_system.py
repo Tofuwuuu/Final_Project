@@ -104,7 +104,7 @@ class DBSystem(DBConnect):
         with self.db.cursor() as cursor:
             
             # SQL query
-            query_script = f"SELECT tbl_accounts.username, tbl_faculty.* FROM tbl_accounts RIGHT JOIN tbl_faculty ON tbl_accounts.account_id = tbl_faculty.teacher_id"
+            query_script = f"SELECT tbl_accounts.username, tbl_faculty.* FROM tbl_accounts RIGHT JOIN tbl_faculty ON tbl_accounts.account_id = tbl_faculty.teacher_id ORDER BY tbl_faculty.scheduled_on ASC"
             cursor.execute(query_script)
             data = cursor.fetchall()
 
