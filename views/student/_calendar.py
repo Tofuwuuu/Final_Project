@@ -45,7 +45,7 @@ class CalendarFrame(ctk.CTkFrame):
         # CalendarUtilitiesWrapper
         self.CaledanrUtilitiesWrapper = ctk.CTkFrame(self, fg_color=self.THEME_GREEN, height=50)
         self.CaledanrUtilitiesWrapper.grid(row=1, column=0, padx=20, pady=5, sticky="nsew")
-        self.CaledanrUtilitiesWrapper.grid_columnconfigure(1, weight=1)
+        self.CaledanrUtilitiesWrapper.grid_columnconfigure(2, weight=1)
 
         # MainWrapper
         self.MainWrapper = ctk.CTkFrame(master=self, fg_color=self.THEME_GREEN)
@@ -53,7 +53,7 @@ class CalendarFrame(ctk.CTkFrame):
         self.MainWrapper.grid_columnconfigure(0, weight=1)
 
         # TitleWrapper | TitleWrapper Welcome Message
-        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Calendar View", text_color="black", font=ctk.CTkFont(family="Poppins", size=24, weight='bold'))
+        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Calendar View", font=ctk.CTkFont(family="Poppins", size=24, weight='bold'))
         self.TitleLabel.grid(row=0, column=0,  padx=10, pady=10, sticky="w")
 
         # TitleWrapper | Notifications
@@ -61,15 +61,19 @@ class CalendarFrame(ctk.CTkFrame):
         self.NotifIcon.grid(row=0, column=1, padx=10, pady=10, sticky="e")
 
         # CalendarUtilitiesWrapper | Calendar Teacher Searching Utility
-        self.FacultyPicker = ctk.CTkOptionMenu(self.CaledanrUtilitiesWrapper, command=lambda username: self.QuerySchedules(username), values=self.db_instance.FetchFacultyNames(asc=True), fg_color=self.THEME_DARKGREEN, dropdown_fg_color=self.THEME_DARKGREEN, button_color=self.THEME_DARKGREEN, button_hover_color=self.THEME_DARKGREEN, text_color=self.DEFAULT)
-        self.FacultyPicker.grid(row=0, column=0, padx=10, pady=5, ipady=5, ipadx=5, sticky="w")
+        self.FacultyText = ctk.CTkLabel(self.CaledanrUtilitiesWrapper, text="Choose a faculty member: ", font=ctk.CTkFont(family="Poppins", size=12))
+        self.FacultyText.grid(row=0, column=0, padx=10, pady=5, ipady=5, ipadx=5, sticky="w")
+
+        # CalendarUtilitiesWrapper | Calendar Teacher Searching Utility
+        self.FacultyPicker = ctk.CTkOptionMenu(self.CaledanrUtilitiesWrapper, command=(lambda username: self.QuerySchedules(username)), values=self.db_instance.FetchFacultyNames(asc=True), fg_color=self.THEME_DARKGREEN, dropdown_fg_color=self.THEME_DARKGREEN, button_color=self.THEME_DARKGREEN, button_hover_color=self.THEME_DARKGREEN, text_color=self.DEFAULT)
+        self.FacultyPicker.grid(row=0, column=1, padx=10, pady=5, ipady=5, ipadx=5, sticky="w")
 
         # CalendarUtilitiesWrapper | Calendar Scheduling Creation Dialog
         self.ScheduleButton = ctk.CTkButton(self.CaledanrUtilitiesWrapper, image=self.CalendarImage, text="Schedule a Consultation", font=ctk.CTkFont(family="Poppins", size=14))
-        self.ScheduleButton.grid(row=0, column=1, padx=10, pady=5, ipady=5, ipadx=5, sticky="e")
+        self.ScheduleButton.grid(row=0, column=2, padx=10, pady=5, ipady=5, ipadx=5, sticky="e")
 
         # MainWrapper | Add calendar widget
-        self.calendar = Calendar(self.MainWrapper, selectbackground="#80B699")
+        self.calendar = Calendar(self.MainWrapper, font=ctk.CTkFont(family="Poppins", size=16),showothermonthdays=False, selectbackground="#80B699", selectmode="none")
         self.calendar.pack(expand=True, fill=tk.BOTH)
 
     def QuerySchedules(self, username: str) -> None:
@@ -86,6 +90,10 @@ class CalendarFrame(ctk.CTkFrame):
         # Data filtered by status
         open_status = [data for data in matching_data if data['status'] == "Open"]
         reserved_status = [data for data in matching_data if data['status'] == "Reserved"]
+
+        # Placing the calendar view to the closest open status available
+        list_date_of_closest_date = str(open_status[0]['scheduled_on']).split('-')
+        self.calendar.configure(mindate=(open_status[0]['scheduled_on']), maxdate=(open_status[-1]['scheduled_on']))
 
         # Generate calendar event on open status schedules
         for data in open_status:

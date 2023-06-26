@@ -31,9 +31,8 @@ task_name VARCHAR(60) NOT NULL,
 task_description VARCHAR(60) NOT NULL,
 created_by INT REFERENCES tbl_accounts(account_id),
 requested_to INT REFERENCES tbl_accounts(account_id),
-created_on DATETIME, 
-status ENUM("Accepted", "Rejected", "Pending", "Ended") NOT NULL, 
-ended_on DATETIME);
+status ENUM("Accepted", "Rejected", "Pending", "Ended") NOT NULL
+);
 
 ALTER TABLE tbl_accounts AUTO_INCREMENT = 100000;
 ALTER TABLE tbl_faculty AUTO_INCREMENT = 200000;
@@ -69,9 +68,16 @@ VALUES (100002, "Schedule 1 Open", '2023-07-28', '10:00:00', '12:00:00', "Open")
        (100008, "Schedule 2 Reserved", '2023-06-14', '9:00:00', '11:30:00', "Reserved");
 
 -- Test values for tbl_consultations
-INSERT INTO tbl_consultations (task_name, task_description, created_by, requested_to, created_on, status, ended_on)
+INSERT INTO tbl_consultations (task_name, task_description, created_by, requested_to, status)
 VALUES
-    ('Task 1', 'Description 1', 100000, 100002, '2023-06-12 10:00:00', 'Accepted', '2023-06-13 15:30:00'),
-    ('Task 2', 'Description 2', 100000, 100003, '2023-06-13 14:00:00', 'Rejected', NULL),
-    ('Task 3', 'Description 3', 100000, 100004, '2023-06-13 14:00:00', 'Pending', NULL),
-    ('Task 4', 'Description 3', 100000, 100005, '2023-06-14 12:30:00', 'Ended', '2023-06-15 09:45:00');
+    ('Task 1', 'Description 1', 100000, 100002, 'Accepted' ),
+    ('Task 2', 'Description 2', 100000, 100003, 'Pending'),
+    ('Task 1', 'Description 1', 100000, 100007, 'Accepted'),
+    ('Task 2', 'Description 2', 100000, 100003, 'Pending'),
+    ('Task 1', 'Description 1', 100001, 100004, 'Accepted'),
+    ('Task 2', 'Description 2', 100001, 100005, 'Pending'),
+    ('Task 3', 'Description 3', 100001, 100004, 'Pending'),
+    ('Task 4', 'Description 3', 100001, 100008, 'Ended');
+
+
+    
