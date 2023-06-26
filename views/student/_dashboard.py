@@ -145,8 +145,7 @@ class DashboardFrame(ctk.CTkFrame):
 
         _cache_teacher_frame = []
         _cache_teacher_label = []
-        _cache_created_date = []
-        _cache_end_date = []
+        _cache_session = []
 
         _cache_info_frame = []
         _cache_sched_name = []
@@ -174,8 +173,7 @@ class DashboardFrame(ctk.CTkFrame):
             _cache_inner_date.append("_cache_inner_date_".join(str(idx)))
             _cache_teacher_frame.append("_cache_teacher_frame_".join(str(idx)))
             _cache_teacher_label.append("_cache_teacher_label_".join(str(idx)))
-            _cache_created_date.append("_cache_created_date_".join(str(idx)))
-            _cache_end_date.append("_cache_end_date_".join(str(idx)))
+            _cache_session.append("_cache_session_".join(str(idx)))
             _cache_info_frame.append("_cache_info_frame_".join(str(idx)))
             _cache_sched_name.append("_cache_sched_name_".join(str(idx)))
             _cache_sched_status.append("_cache_sched_status_".join(str(idx)))
@@ -190,7 +188,7 @@ class DashboardFrame(ctk.CTkFrame):
 
             # Inner frame for date
             _cache_inner_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color=self.THEME_DARKGREEN)
-            _cache_inner_frame[idx].grid(row=0, column=0, padx=20, pady=10, sticky="nsw")
+            _cache_inner_frame[idx].grid(row=0, column=0, padx=10, pady=10, sticky="nsw")
             _cache_inner_frame[idx].grid_columnconfigure(0, weight=1)
             _cache_inner_frame[idx].grid_rowconfigure(0, weight=1)
 
@@ -201,3 +199,37 @@ class DashboardFrame(ctk.CTkFrame):
             # Inner Month
             _cache_inner_date[idx] = ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%B')}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
             _cache_inner_date[idx].grid(row=1, column=0, sticky="nsew")
+
+            # Inner frame for Schedule Info
+            _cache_teacher_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color=self.THEME_DARKGREEN)
+            _cache_teacher_frame[idx].grid(row=0, column=1, padx=10, pady=10, sticky="nsw")
+            _cache_teacher_frame[idx].grid_columnconfigure(0, weight=1)
+            _cache_teacher_frame[idx].grid_rowconfigure(0, weight=1)
+
+            #Inner Teacher Text
+            _cache_teacher_label[idx] = ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{upcoming_data[idx]['teacher']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
+            _cache_teacher_label[idx].grid(row=0, column=0, sticky="nsew")
+
+
+            # timedelta lost my sanity. It is not even a timezone conversion wtf.
+            session_start = upcoming_data[idx]['open_at']
+            session_end = upcoming_data[idx]['close_at']
+
+            # Get the total seconds from the timedelta
+            total_start = int(session_start.total_seconds())
+            total_end = int(session_end.total_seconds())
+
+            # Convert the total seconds to hours and minutes
+            start_hours = total_start // 3600
+            start_minutes = (total_start % 3600) // 60
+            end_hours = total_end // 3600
+            end_minutes = (total_end % 3600) // 60
+            # Create a time object using the hours and minutes
+            start_time_obj = datetime.time(start_hours, start_minutes)
+            end_time_obj = datetime.time(end_hours, end_minutes)
+            
+            formatted_time = f"{start_time_obj.strftime('%I:%M %p')} - {end_time_obj.strftime('%I:%M %p')}"
+
+            # Inner day label
+            _cache_session[idx] = ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{formatted_time}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
+            _cache_session[idx].grid(row=1, column=0, sticky="nsew")
