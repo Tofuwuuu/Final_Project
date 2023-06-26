@@ -6,6 +6,7 @@ Reference frame for main_init.py
 import customtkinter as ctk
 import tkinter as tk
 import models.resources as res
+import datetime
 
 class DashboardFrame(ctk.CTkFrame):
 
@@ -113,16 +114,90 @@ class DashboardFrame(ctk.CTkFrame):
         self.ConsultationDashButton.grid(row=2, column=0, padx=7, pady=10)
 
         # Upcoming Consultation wrapper for grouping the dashboard utilities
-        self.ConWrapper = ctk.CTkScrollableFrame(master=self, fg_color="transparent")
-        self.ConWrapper.grid(row=1, columnspan=1, padx=20, pady=10, ipady=10, sticky="nsew")
+        self.ConWrapper = ctk.CTkFrame(master=self, fg_color=self.THEME_GREEN)
+        self.ConWrapper.grid(row=1, columnspan=1, padx=20, pady=5, ipady=10, sticky="nsew")
         self.ConWrapper.grid_columnconfigure(0, weight=1)
+        self.ConWrapper.grid_rowconfigure(1, weight=1)
+        
+        # Upcoming Consultation List Wrapper
+        self.ConListWrapper = ctk.CTkScrollableFrame(master=self.ConWrapper, fg_color=self.THEME_DARKGREEN)
+        self.ConListWrapper.grid(row=1, columnspan=1, padx=20, pady=10, ipady=10, sticky="nsew")
+        self.ConListWrapper.grid_columnconfigure(0, weight=1)
 
         # ConWrapper | Upcoming Consultations Label
         self.UpcomingConsultationsLabel = ctk.CTkLabel(self.ConWrapper, text="Upcoming Consultations", text_color="#2B9348", font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
-        self.UpcomingConsultationsLabel.grid(row=0, column=0, pady=20, padx=20, sticky="w")
+        self.UpcomingConsultationsLabel.grid(row=0, column=0, pady=10, padx=20, sticky="w")
 
         # ConWrapper | View Details Label
         self.ViewDetailsButton = ctk.CTkButton(self.ConWrapper, fg_color="transparent", bg_color="transparent",text="View Details", text_color="gray", font=ctk.CTkFont(family="Poppins", size=13, underline=True), command=lambda: self.master.SelectedPanel("consultation"), hover=None)
         self.ViewDetailsButton.grid(row=0, column=1, pady=20, padx=20, sticky="w")
 
+    def UpdateUpcoming(self, account: int) -> None:
         
+        """ Reference
+        Update upcoming consultation based on realtime database."""
+
+        _cache_frame = []
+
+        _cache_inner_frame = []
+        _cache_inner_label = []
+        _cache_inner_date = []
+
+        _cache_teacher_frame = []
+        _cache_teacher_label = []
+        _cache_created_date = []
+        _cache_end_date = []
+
+        _cache_info_frame = []
+        _cache_sched_name = []
+        _cache_sched_status = []
+        _cache_sched_details = []
+
+        _cache_redirect = []
+
+        account_history = self.db_instance.FetchUserHistory(account)
+
+        # Sort by username of the teacher
+        sorted_faculty = sorted(account_history, key=lambda x: x["teacher"])
+
+        # Upcoming account consultation denoted by ("Pending", "Accepted") on column "status"
+        upcoming_data = [data for data in sorted_faculty if data['status'] == 'Accepted' or 'Pending']
+        
+        print(upcoming_data)
+        # Iteration to place dynamic data in the frame
+        for idx in range(len(upcoming_data)):
+            
+            # Initializing cache variables
+            _cache_frame.append("_cache_frame_".join(str(idx)))
+            _cache_inner_frame.append("_cache_inner_frame_".join(str(idx)))
+            _cache_inner_label.append("_cache_inner_label_".join(str(idx)))
+            _cache_inner_date.append("_cache_inner_date_".join(str(idx)))
+            _cache_teacher_frame.append("_cache_teacher_frame_".join(str(idx)))
+            _cache_teacher_label.append("_cache_teacher_label_".join(str(idx)))
+            _cache_created_date.append("_cache_created_date_".join(str(idx)))
+            _cache_end_date.append("_cache_end_date_".join(str(idx)))
+            _cache_info_frame.append("_cache_info_frame_".join(str(idx)))
+            _cache_sched_name.append("_cache_sched_name_".join(str(idx)))
+            _cache_sched_status.append("_cache_sched_status_".join(str(idx)))
+            _cache_sched_details.append("_cache_sched_details_".join(str(idx)))
+            _cache_redirect.append("_cache_redirect_".join(str(idx)))
+
+            # Main frame
+            _cache_frame[idx] = ctk.CTkFrame(master=self.ConListWrapper, fg_color=self.THEME_YELLOW)
+            _cache_frame[idx].grid(row=idx, column=0, pady=5, padx=5, sticky="nsew")
+            _cache_frame[idx].grid_columnconfigure(2, weight=1)
+            _cache_frame[idx].grid_rowconfigure(2, weight=1)
+
+            # Inner frame for date
+            _cache_inner_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color=self.THEME_DARKGREEN)
+            _cache_inner_frame[idx].grid(row=0, column=0, padx=20, pady=10, sticky="nsw")
+            _cache_inner_frame[idx].grid_columnconfigure(0, weight=1)
+            _cache_inner_frame[idx].grid_rowconfigure(0, weight=1)
+
+            # Inner day label
+            _cache_inner_label[idx] = ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%d')}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
+            _cache_inner_label[idx].grid(row=0, column=0, sticky="nsew")
+
+            # Inner Month
+            _cache_inner_date[idx] = ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%B')}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
+            _cache_inner_date[idx].grid(row=1, column=0, sticky="nsew")

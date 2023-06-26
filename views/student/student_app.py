@@ -164,6 +164,7 @@ class StudentApp(ctk.CTk):
         if name == "dashboard":
             # Display
             self.DashboardPanel.grid(row=0, column=1, sticky="nsew")
+            self.DashboardPanel.UpdateUpcoming(account=self.user_data['account_id'])
             # Show as "selected button"
             self.ToDashboard.configure(fg_color=("gray75", "gray25"))
         else:
