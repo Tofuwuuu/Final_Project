@@ -121,7 +121,7 @@ class DBSystem(DBConnect):
         with self.db.cursor() as cursor:
             
             # SQL query
-            query_script = f"SELECT con.history_id, con.task_description, student.username AS student, teacher.username AS teacher, con.status, sched.scheduled_on, sched.open_at, sched.close_at FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = con.requested_to LEFT JOIN tbl_faculty AS sched ON sched.teacher_id = con.requested_to LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by WHERE student.account_id = {account_id}"
+            query_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, con.status, sched.scheduled_on, sched.open_at, sched.close_at FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = con.requested_to LEFT JOIN tbl_faculty AS sched ON sched.teacher_id = con.requested_to LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by WHERE student.account_id = {account_id}"
             cursor.execute(query_script)
             data = cursor.fetchall()
 
