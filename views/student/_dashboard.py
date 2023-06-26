@@ -28,7 +28,7 @@ class DashboardFrame(ctk.CTkFrame):
         self.ConsultationImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.consultation_dark), dark_image=res.fetch_image(res.images.nav_ico.consultation_light), size=(80, 80))
         self.NotifImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.notif_dark), dark_image=res.fetch_image(res.images.nav_ico.notif_light), size=(20, 20))
         self.AlertNotifImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.alert_notif_dark), dark_image=res.fetch_image(res.images.nav_ico.alert_notif_light), size=(20, 20))
-        self.GoNextImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.go_next_dark), dark_image=res.fetch_image(res.images.nav_ico.go_next_light), size=(20, 20))
+        self.GoNextImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.go_next_dark), dark_image=res.fetch_image(res.images.nav_ico.go_next_light), size=(50, 50))
         self.UserProfileImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.user_profile_dark), dark_image=res.fetch_image(res.images.nav_ico.user_profile_light), size=(50, 50))
         """ End of resource pathing """
 
@@ -118,18 +118,18 @@ class DashboardFrame(ctk.CTkFrame):
         self.ConsultationDashButton.grid(row=2, column=0, padx=7, pady=10)
 
         # Upcoming Consultation wrapper for grouping the dashboard utilities
-        self.ConWrapper = ctk.CTkFrame(master=self, fg_color=self.THEME_GREEN)
+        self.ConWrapper = ctk.CTkFrame(master=self, fg_color="transparent")
         self.ConWrapper.grid(row=1, columnspan=1, padx=20, pady=5, ipady=10, sticky="nsew")
         self.ConWrapper.grid_columnconfigure(0, weight=1)
         self.ConWrapper.grid_rowconfigure(1, weight=1)
         
         # Upcoming Consultation List Wrapper
-        self.ConListWrapper = ctk.CTkScrollableFrame(master=self.ConWrapper, fg_color=self.THEME_DARKGREEN)
+        self.ConListWrapper = ctk.CTkScrollableFrame(master=self.ConWrapper, fg_color="transparent")
         self.ConListWrapper.grid(row=1, column=0, padx=20, pady=10, ipady=10, sticky="nsew")
         self.ConListWrapper.grid_columnconfigure(0, weight=1)
 
         # Upcoming Consultation Info Wrapper
-        self.ConInfoWrapper = ctk.CTkFrame(master=self.ConWrapper, fg_color=self.THEME_DARKGREEN)
+        self.ConInfoWrapper = ctk.CTkFrame(master=self.ConWrapper, fg_color="transparent")
         self.ConInfoWrapper.grid(row=1, column=1, padx=20, pady=10, ipady=10, sticky="nsew")
         self.ConInfoWrapper.grid_columnconfigure(0, weight=1)
         self.ConInfoWrapper.grid_rowconfigure(0, weight=1)
@@ -144,7 +144,7 @@ class DashboardFrame(ctk.CTkFrame):
 
         # ConWrapper | View Details Label
         self.ViewDetailsButton = ctk.CTkButton(self.ConWrapper, fg_color="transparent", bg_color="transparent",text="View Details", text_color="gray", font=ctk.CTkFont(family="Poppins", size=13, underline=True), command=lambda: self.master.SelectedPanel("consultation"), hover=None)
-        self.ViewDetailsButton.grid(row=0, column=1, pady=20, padx=20, sticky="w")
+        self.ViewDetailsButton.grid(row=0, column=1, pady=20, padx=50, sticky="w")
 
 
     def UpdateUpcoming(self, account: int) -> None:
@@ -176,13 +176,13 @@ class DashboardFrame(ctk.CTkFrame):
             _cache_info_frame.append("_cache_info_frame_".join(str(idx)))
 
             # Main frame
-            _cache_frame[idx] = ctk.CTkFrame(master=self.ConListWrapper, fg_color=self.THEME_GREEN)
-            _cache_frame[idx].grid(row=idx, column=0, pady=5, padx=5, sticky="nsew")
+            _cache_frame[idx] = ctk.CTkFrame(master=self.ConListWrapper, fg_color="transparent", border_color="gray", border_width=2, corner_radius=5)
+            _cache_frame[idx].grid(row=idx, column=0, pady=10, padx=5, sticky="nsew")
             _cache_frame[idx].grid_columnconfigure(3, weight=1)
             _cache_frame[idx].grid_rowconfigure(2, weight=1)
 
             # Inner frame for date
-            _cache_inner_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color="transparent")
+            _cache_inner_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color=self.THEME_BLUE, corner_radius=5)
             _cache_inner_frame[idx].grid(row=0, column=0, padx=10, pady=10, sticky="nsw")
             _cache_inner_frame[idx].grid_columnconfigure(0, weight=1)
             _cache_inner_frame[idx].grid_rowconfigure(0, weight=1)
@@ -200,11 +200,11 @@ class DashboardFrame(ctk.CTkFrame):
             _cache_info_frame[idx].grid_rowconfigure(0, weight=1)
 
             # Inner day label
-            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%d')}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
+            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%d')}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, padx=30, sticky="nsew")
             # Inner Month
-            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%B')}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=1, column=0, sticky="nsew")
+            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{upcoming_data[idx]['scheduled_on'].strftime('%B')[0:3]}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=18, weight='bold')).grid(row=1, column=0, sticky="nsew")
             #Inner Teacher Text
-            ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{upcoming_data[idx]['teacher']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
+            ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{upcoming_data[idx]['teacher']}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
 
             # timedelta lost my sanity. It is not even a timezone conversion wtf.
             session_start = upcoming_data[idx]['open_at']
@@ -226,10 +226,10 @@ class DashboardFrame(ctk.CTkFrame):
             formatted_time = f"{start_time_obj.strftime('%I:%M %p')} - {end_time_obj.strftime('%I:%M %p')}"
 
             # Inner TimeSpan in TeacherWrapper
-            ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{formatted_time}", text_color="white", font=ctk.CTkFont(family="Poppins", size=10)).grid(row=1, column=0, sticky="nsew")
+            ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{formatted_time}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=12)).grid(row=1, column=0, sticky="w")
             # Inner TimeSpan in TeacherWrapper
-            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{upcoming_data[idx]['task_name']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=12)).grid(row=0, column=0, sticky="nsew")
+            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{upcoming_data[idx]['task_name']}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=13, weight='bold')).grid(row=0, column=0, sticky="nsew")
             # Inner TimeSpan in TeacherWrapper
-            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{upcoming_data[idx]['status']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=10)).grid(row=1, column=0, sticky="nsew")
+            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"    {upcoming_data[idx]['status']}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=12)).grid(row=1, column=0, padx=30, sticky="w")
             # Button gg go next
-            ctk.CTkButton(master=_cache_frame[idx], command=lambda:self.master.SelectedPanel("consultation"),image=self.GoNextImage, text=None, fg_color=self.THEME_YELLOW).grid(row=0, column=3, padx=20, pady=10, sticky="e")
+            ctk.CTkButton(master=_cache_frame[idx], command=lambda:self.master.SelectedPanel("consultation"),image=self.GoNextImage, text=None, fg_color="transparent", hover=None).grid(row=0, column=3, padx=5, pady=10, sticky="e")
