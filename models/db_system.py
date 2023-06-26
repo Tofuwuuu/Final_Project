@@ -95,16 +95,38 @@ class DBSystem(DBConnect):
             else:
                 return names_data
         
-    def FetchFacultySchedules(self) -> list | None:
+    def FetchFacultyConsultInfo(self) -> list | None:
         
         """Reference:
-        For querying faculty members schedule, joined table values for tbl_accounts and tbl_faculty
+        For querying faculty members schedule, joined table values for tbl_accounts and tbl_consultation
         """
         
         with self.db.cursor() as cursor:
             
             # SQL query
-            query_script = f"SELECT tbl_accounts.username, tbl_faculty.* FROM tbl_accounts RIGHT JOIN tbl_faculty ON tbl_accounts.account_id = tbl_faculty.teacher_id ORDER BY tbl_faculty.scheduled_on ASC"
+            query_script = f"SELECT tbl_accounts.username, tbl_accounts.email, tbl_accounts.first_name, tbl_accounts.last_name, tbl_faculty.* FROM tbl_accounts RIGHT JOIN tbl_faculty ON tbl_accounts.account_id = tbl_faculty.teacher_id ORDER BY tbl_faculty.scheduled_on ASC"
+            cursor.execute(query_script)
+            data = cursor.fetchall()
+
+            #Get the column names
+            legend = [column[0] for column in cursor.description]
+
+            # Making a list of dictionaries to represent data
+            return [dict(zip(legend, idx)) for idx in data]
+        
+        
+        
+    def FetchClosestOpenSchedules(self) -> list | None:
+        
+        """Reference:
+        Same implementation as FetchFacultySchedules
+        Returns recent distinct and open status only
+        """
+        
+        with self.db.cursor() as cursor:
+            
+            # SQL query
+            query_script = f"SELECT DISTINCT tbl_accounts.username, tbl_faculty.* FROM tbl_accounts RIGHT JOIN tbl_faculty ON tbl_accounts.account_id = tbl_faculty.teacher_id WHERE status = 'Open' ORDER BY tbl_faculty.scheduled_on ASC"
             cursor.execute(query_script)
             data = cursor.fetchall()
 

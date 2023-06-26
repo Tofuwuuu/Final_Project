@@ -24,10 +24,12 @@ class DashboardFrame(ctk.CTkFrame):
         """ File directory pathing for images """
         self.FacultyImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.faculty_dark), dark_image=res.fetch_image(res.images.nav_ico.faculty_light), size=(80, 80))
         self.CalendarImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.calendar_dark), dark_image=res.fetch_image(res.images.nav_ico.calendar_light), size=(80, 80))
+        self.SmallCalendarImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.calendar_dark), dark_image=res.fetch_image(res.images.nav_ico.calendar_light), size=(20, 20))
         self.ConsultationImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.consultation_dark), dark_image=res.fetch_image(res.images.nav_ico.consultation_light), size=(80, 80))
         self.NotifImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.notif_dark), dark_image=res.fetch_image(res.images.nav_ico.notif_light), size=(20, 20))
         self.AlertNotifImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.alert_notif_dark), dark_image=res.fetch_image(res.images.nav_ico.alert_notif_light), size=(20, 20))
         self.GoNextImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.go_next_dark), dark_image=res.fetch_image(res.images.nav_ico.go_next_light), size=(20, 20))
+        self.UserProfileImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.user_profile_dark), dark_image=res.fetch_image(res.images.nav_ico.user_profile_light), size=(50, 50))
         """ End of resource pathing """
 
         # Styling as row-stretch
@@ -144,6 +146,7 @@ class DashboardFrame(ctk.CTkFrame):
         self.ViewDetailsButton = ctk.CTkButton(self.ConWrapper, fg_color="transparent", bg_color="transparent",text="View Details", text_color="gray", font=ctk.CTkFont(family="Poppins", size=13, underline=True), command=lambda: self.master.SelectedPanel("consultation"), hover=None)
         self.ViewDetailsButton.grid(row=0, column=1, pady=20, padx=20, sticky="w")
 
+
     def UpdateUpcoming(self, account: int) -> None:
         
         """ Reference
@@ -229,4 +232,4 @@ class DashboardFrame(ctk.CTkFrame):
             # Inner TimeSpan in TeacherWrapper
             ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{upcoming_data[idx]['status']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=10)).grid(row=1, column=0, sticky="nsew")
             # Button gg go next
-            ctk.CTkButton(master=_cache_frame[idx], image=self.GoNextImage, text=None, fg_color=self.THEME_YELLOW).grid(row=0, column=3, padx=20, pady=10, sticky="e")
+            ctk.CTkButton(master=_cache_frame[idx], command=lambda:self.master.SelectedPanel("consultation"),image=self.GoNextImage, text=None, fg_color=self.THEME_YELLOW).grid(row=0, column=3, padx=20, pady=10, sticky="e")

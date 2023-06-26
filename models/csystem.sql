@@ -16,7 +16,7 @@ CREATE TABLE tbl_accounts (
 );
 
 CREATE TABLE tbl_faculty(
-history_id INT NOT NULL PRIMARY KEY auto_increment,
+schedule_id INT NOT NULL PRIMARY KEY auto_increment,
 teacher_id INT REFERENCES tbl_accounts(account_id),
 schedule_name VARCHAR(30) NOT NULL, 
 scheduled_on DATE NOT NULL,
