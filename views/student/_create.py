@@ -120,8 +120,19 @@ class CreationFrame(ctk.CTkFrame):
         data = [self.TeacherEntry.get(), self.TeacherOpenDateMenu.get(), self.TeacherOpenTimeMenu.get(), self.RequestTitle.get(), self.RequestBody.get()]
         return dict(zip(legend, data))
     
+    def CheckIfExistingRequest(self) -> bool:
+        form_data = self.Getter()
+        user_generated_consultation_data = self.db_instance.FetchAccountConsultationHistory(self.user_data['account_id'])
+        form_schedule_ids = [data['schedule_id'] for data in user_generated_consultation_data]
+        teacher_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['username'] == form_data['teacher'] and str(data['scheduled_on']) == form_data['date'] and dtf.ConvertTime(data['open_at']) == form_data['time']]
+        if teacher_data[0]['schedule_id'] in form_schedule_ids:
+            return True
+        else:
+            return False
+        
+    
     def FormHandler(self) -> None:
-
+        self.FormHandlerStatus.configure(text_color='red')
         form_data = self.Getter()
 
         if form_data['teacher'] == self.PLACEHOLDER_TEACHER:
@@ -134,16 +145,27 @@ class CreationFrame(ctk.CTkFrame):
             self.FormHandlerStatus.configure(text="Error: no title.")
         elif form_data['body'] == '':
             self.FormHandlerStatus.configure(text="Error: no description.")
+        elif self.CheckIfExistingRequest():
+            self.FormHandlerStatus.configure(text="Error: no duplicating request.")
         else:
-            self.FormHandlerStatus.configure(text="Successfully placed a request!", text_color="Green")
-            self.PlaceRequest()
+            if self.PlaceRequest():
+                self.FormHandlerStatus.configure(text="Successfully placed a request!", text_color="Green")
         
     # Inserting request to the database
-    def PlaceRequest(self) -> None:
+    def PlaceRequest(self) -> bool:
 
         # Get informations
         form_data = self.Getter()
         
         account_data = self.user_data
-
         teacher_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['username'] == form_data['teacher'] and str(data['scheduled_on']) == form_data['date'] and dtf.ConvertTime(data['open_at']) == form_data['time']]
+
+        gathered_data = {
+            "student": account_data["account_id"],
+            "schedule_id": teacher_data[0]["schedule_id"],
+            "task_name": self.RequestTitle.get(),
+            "task_desc": self.RequestBody.get(),
+            "status": "Pending"
+        }
+
+        return self.db_instance.InsertConsultationRequest(gathered_data)

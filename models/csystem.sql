@@ -27,7 +27,7 @@ status ENUM("Open", "Reserved", "Ended")
 
 CREATE TABLE tbl_consultations(
 history_id INT NOT NULL PRIMARY KEY auto_increment, 
-task_name VARCHAR(60) NOT NULL, 
+task_name VARCHAR(30) NOT NULL, 
 task_description VARCHAR(60) NOT NULL,
 created_by INT REFERENCES tbl_accounts(account_id),
 schedule_id INT REFERENCES tbl_faculty(schedule_id),
@@ -78,4 +78,4 @@ VALUES
     (300005, 'Task 2', 'Description 2', 100001, 200010, 'Pending'),
     (300006, 'Task 3', 'Description 3', 100001, 200012, 'Pending'),
     (300007, 'Task 4', 'Description 3', 100001, 200013, 'Ended');
-
+    

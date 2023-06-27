@@ -160,7 +160,7 @@ class DBSystem(DBConnect):
         with self.db.cursor() as cursor:
             
             # SQL query
-            query_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, con.status, sched.scheduled_on, sched.open_at, sched.close_at FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by LEFT JOIN tbl_faculty AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = sched.teacher_id WHERE student.account_id = {account_id} ORDER BY sched.scheduled_on DESC"
+            query_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, con.status, sched.schedule_id, sched.schedule_name, sched.scheduled_on, sched.open_at, sched.close_at, sched.status FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by LEFT JOIN tbl_faculty AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = sched.teacher_id WHERE student.account_id = {account_id} ORDER BY sched.scheduled_on DESC"
             cursor.execute(query_script)
             data = cursor.fetchall()
             #Get the column names
@@ -168,3 +168,18 @@ class DBSystem(DBConnect):
 
             # Making a list of dictionaries to represent data
             return [dict(zip(legend, idx)) for idx in data]
+
+    def InsertConsultationRequest(self, request_data: dict) -> bool:
+        """ Inserting requested_data into the consultation table """
+
+        try:
+
+            with self.db.cursor() as cursor:              
+                # SQL query
+                query_script = f"INSERT INTO tbl_consultations (task_name, task_description, created_by, schedule_id, status) VALUES ('{request_data['task_name']}', '{request_data['task_desc']}', '{request_data['student']}', '{request_data['schedule_id']}', '{request_data['status']}')"
+                cursor.execute(query_script)
+                self.db.commit()
+                return True
+        
+        except ValueError:
+            return False
