@@ -73,6 +73,7 @@ class DBSystem(DBConnect):
                 cursor.execute(query_script)
                 self.db.commit()
 
+
     def FetchFacultyNames(self, asc: bool = True) -> list | None:
          
         """ Reference:
@@ -86,7 +87,7 @@ class DBSystem(DBConnect):
         with self.db.cursor() as cursor:
             
             # SQL query
-            query_script = f"SELECT tbl_accounts.username FROM tbl_accounts WHERE role = 'T'"
+            query_script = f"SELECT acc.username FROM tbl_accounts AS acc WHERE role = 'T'"
             cursor.execute(query_script)
             names_data = [data[0] for data in cursor.fetchall()] 
 
@@ -95,29 +96,7 @@ class DBSystem(DBConnect):
             else:
                 return names_data
             
-    def FetchOpenFacultySchedules(self, asc: bool = True) -> list | None:
-        
-        """ Reference:
-        For querying faculty members that have open time schedules
-
-        Return(s):
-            list: A list of defined columns stored in the database.
-            None: None 
-        """
-
-        with self.db.cursor() as cursor:
-            
-            # SQL query
-            query_script = f"SELECT teacher.username, sched.* FROM tbl_accounts AS teacher LEFT JOIN tbl_faculty AS sched ON teacher.account_id = sched.teacher_id WHERE teacher.role = 'T' AND sched.status = 'Open' ORDER BY sched.scheduled_on ASC"
-            cursor.execute(query_script)
-            data = [data for data in cursor.fetchall()] 
-            #  Get the column names
-            legend = [column[0] for column in cursor.description]
-
-            # Making a list of dictionaries to represent data
-            return [dict(zip(legend, idx)) for idx in data]
-            
-    def FetchFacultyConsultInfo(self) -> list | None:
+    def FetchOpenFacultySchedules(self) -> list | None:
         
         """Reference:
         For querying faculty members schedule, joined table values for tbl_accounts and tbl_consultation
@@ -126,7 +105,7 @@ class DBSystem(DBConnect):
         with self.db.cursor() as cursor:
             
             # SQL query
-            query_script = f"SELECT tbl_accounts.username, tbl_accounts.email, tbl_accounts.first_name, tbl_accounts.last_name, tbl_faculty.* FROM tbl_accounts RIGHT JOIN tbl_faculty ON tbl_accounts.account_id = tbl_faculty.teacher_id ORDER BY tbl_faculty.scheduled_on ASC"
+            query_script = f"SELECT acc.username, acc.email, acc.first_name, acc.last_name, fac.* FROM tbl_accounts AS acc RIGHT JOIN tbl_faculty as fac ON acc.account_id = fac.teacher_id WHERE fac.status = 'Open' ORDER BY fac.scheduled_on ASC"
             cursor.execute(query_script)
             data = cursor.fetchall()
 
@@ -148,7 +127,7 @@ class DBSystem(DBConnect):
         with self.db.cursor() as cursor:
             
             # SQL query
-            query_script = f"SELECT DISTINCT tbl_accounts.username, tbl_faculty.* FROM tbl_accounts RIGHT JOIN tbl_faculty ON tbl_accounts.account_id = tbl_faculty.teacher_id WHERE status = 'Open' ORDER BY tbl_faculty.scheduled_on ASC"
+            query_script = f"SELECT DISTINCT acc.username, fac.* FROM tbl_accounts AS acc RIGHT JOIN tbl_faculty as fac ON acc.account_id = fac.teacher_id WHERE status = 'Open' ORDER BY fac.scheduled_on ASC"
             cursor.execute(query_script)
             data = cursor.fetchall()
 
@@ -165,7 +144,23 @@ class DBSystem(DBConnect):
         with self.db.cursor() as cursor:
             
             # SQL query
-            query_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, con.status, sched.scheduled_on, sched.open_at, sched.close_at FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = con.requested_to LEFT JOIN tbl_faculty AS sched ON sched.teacher_id = con.requested_to LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by WHERE student.account_id = {account_id} AND CONVERT(sched.scheduled_on, DATE) >= CURDATE()"
+            query_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, con.status, sched.scheduled_on, sched.open_at, sched.close_at FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by LEFT JOIN tbl_faculty AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = sched.teacher_id WHERE student.account_id = {account_id} AND CONVERT(sched.scheduled_on, DATE) >= CURDATE()"
+            cursor.execute(query_script)
+            data = cursor.fetchall()
+            #Get the column names
+            legend = [column[0] for column in cursor.description]
+
+            # Making a list of dictionaries to represent data
+            return [dict(zip(legend, idx)) for idx in data]
+
+    def FetchAccountConsultationHistory(self, account_id: int) -> list | None:
+        """ Reference
+        Fetching all of the account related consultation schedules """
+         
+        with self.db.cursor() as cursor:
+            
+            # SQL query
+            query_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, con.status, sched.scheduled_on, sched.open_at, sched.close_at FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by LEFT JOIN tbl_faculty AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = sched.teacher_id WHERE student.account_id = {account_id} ORDER BY sched.scheduled_on DESC"
             cursor.execute(query_script)
             data = cursor.fetchall()
             #Get the column names

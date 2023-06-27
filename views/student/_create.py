@@ -10,6 +10,10 @@ import models.datetimeformatter as dtf
 
 class CreationFrame(ctk.CTkFrame):
 
+    PLACEHOLDER_TEACHER = "Choose a teacher"
+    PLACEHOLDER_DATE = 'Pick a date'
+    PLACEHOLDER_TIME = 'Pick a time'
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -38,6 +42,7 @@ class CreationFrame(ctk.CTkFrame):
         # Theme design, because I can't setup json file for custom theme installation using set_default_theme.
         self.THEME_GREEN = self.master.THEME_GREEN
         self.THEME_YELLOW = self.master.THEME_YELLOW
+        self.THEME_BLUE = self.master.THEME_BLUE
         self.THEME_DARKGREEN = self.master.THEME_DARKGREEN
         self.DEFAULT = self.master.DEFAULT
 
@@ -60,15 +65,15 @@ class CreationFrame(ctk.CTkFrame):
         self.MainWrapper.grid_columnconfigure(0, weight=1)
 
         # Teacher
-        self.TeacherEntry = ctk.CTkOptionMenu(master=self.MainWrapper,command=lambda value: self.NextToName(value), values=['Choose a Teacher'])
+        self.TeacherEntry = ctk.CTkOptionMenu(master=self.MainWrapper, command=lambda value: self.UpdateOpenDate(value), values=[self.PLACEHOLDER_TEACHER])
         self.TeacherEntry.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         # Open Dates
-        self.TeacherOpenDateMenu = ctk.CTkOptionMenu(master=self.MainWrapper, command=lambda value: self.NextToDate(value), values=['Pick a Date'], state='disabled')
+        self.TeacherOpenDateMenu = ctk.CTkOptionMenu(master=self.MainWrapper, command=lambda value: self.UpdateOpenTime(value), values=[self.PLACEHOLDER_DATE], state='disabled')
         self.TeacherOpenDateMenu.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
 
         # Open Dates
-        self.TeacherOpenTimeMenu = ctk.CTkOptionMenu(master=self.MainWrapper, values=['Pick a Time'], state='disabled')
+        self.TeacherOpenTimeMenu = ctk.CTkOptionMenu(master=self.MainWrapper, values=[self.PLACEHOLDER_TIME], state='disabled')
         self.TeacherOpenTimeMenu.grid(row=2, column=0, padx=5, pady=5, sticky="nsew")
 
         # Task Name
@@ -80,24 +85,65 @@ class CreationFrame(ctk.CTkFrame):
         self.RequestBody.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
 
         # Open RequestButton
-        self.RequestButton = ctk.CTkButton(master=self.MainWrapper, text="Place a request")
-        self.RequestButton.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
+        self.FormHandlerStatus = ctk.CTkLabel(master=self.MainWrapper, text=None, text_color="Red", font=ctk.CTkFont(family="Poppins", size=14))
+        self.FormHandlerStatus.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
+
+        # Open RequestButton
+        self.RequestButton = ctk.CTkButton(master=self.MainWrapper, command=self.FormHandler, text="Place a request")
+        self.RequestButton.grid(row=6, column=0, padx=5, pady=5, sticky="nsew")
     
-    def UpdateData(self):
+    def UpdateOpenFaculty(self) -> None:
+        open_data = self.db_instance.FetchOpenFacultySchedules()
+        teacher_names = [data['username'] for data in open_data]
+        self.TeacherEntry.configure(values=teacher_names)
 
-        TeacherValue = [data['username'] for data in self.db_instance.FetchOpenFacultySchedules()]
-        DateValue = [str(data['scheduled_on']) for data in self.db_instance.FetchOpenFacultySchedules()]
-        TimeValue = [dtf.ConvertTime(data['open_at']) for data in self.db_instance.FetchOpenFacultySchedules()]
+    def UpdateOpenDate(self, value: str) -> None:
+        open_data = self.db_instance.FetchOpenFacultySchedules()
+        teacher_entry = value
 
-        self.TeacherEntry.configure(values=TeacherValue)
-        self.TeacherOpenDateMenu.configure(values=DateValue)
-        self.TeacherOpenTimeMenu.configure(values=TimeValue)
+        if isinstance(teacher_entry, (str)) and teacher_entry != self.PLACEHOLDER_TEACHER:
+
+            date_data = [str(data['scheduled_on']) for data in open_data if data['username'] == teacher_entry]
+            self.TeacherOpenDateMenu.configure(values=date_data, state="NORMAL")
+    
+    def UpdateOpenTime(self, value: str) -> None:
+        open_data = self.db_instance.FetchOpenFacultySchedules()
+        teacher_entry = self.TeacherEntry.get()
+        date_entry = value
+
+        if isinstance(date_entry, (str)) and date_entry != self.PLACEHOLDER_DATE:
+            time_data = [dtf.ConvertTime(data['open_at']) for data in open_data if data['username'] == teacher_entry and str(data['scheduled_on']) == date_entry]
+            self.TeacherOpenTimeMenu.configure(values=time_data, state="NORMAL")
+
+    def Getter(self) -> dict:
+        legend = ['teacher', 'date', 'time', 'title', 'body']
+        data = [self.TeacherEntry.get(), self.TeacherOpenDateMenu.get(), self.TeacherOpenTimeMenu.get(), self.RequestTitle.get(), self.RequestBody.get()]
+        return dict(zip(legend, data))
+    
+    def FormHandler(self) -> None:
+
+        form_data = self.Getter()
+
+        if form_data['teacher'] == self.PLACEHOLDER_TEACHER:
+            pass
+        elif form_data['date'] == self.PLACEHOLDER_DATE:
+            self.FormHandlerStatus.configure(text="Error: you have not yet selected a date.")
+        elif form_data['time'] == self.PLACEHOLDER_TIME:
+            self.FormHandlerStatus.configure(text="Error: you have not yet selected a time.")
+        elif form_data['title'] == '':
+            self.FormHandlerStatus.configure(text="Error: no title.")
+        elif form_data['body'] == '':
+            self.FormHandlerStatus.configure(text="Error: no description.")
+        else:
+            self.FormHandlerStatus.configure(text="Successfully placed a request!", text_color="Green")
+            self.PlaceRequest()
         
-    
-    def NextToName(self, name: str) -> None:
-        if (isinstance(name, (str))) and name != "Choose a teacher":
-            self.TeacherOpenDateMenu.configure(state="NORMAL")
-    
-    def NextToDate(self, date: str) -> None:
-        if (isinstance(date, (str))) and date != "Pick a Date":
-            self.TeacherOpenTimeMenu.configure(state="NORMAL")
+    # Inserting request to the database
+    def PlaceRequest(self) -> None:
+
+        # Get informations
+        form_data = self.Getter()
+        
+        account_data = self.user_data
+
+        teacher_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['username'] == form_data['teacher'] and str(data['scheduled_on']) == form_data['date'] and dtf.ConvertTime(data['open_at']) == form_data['time']]

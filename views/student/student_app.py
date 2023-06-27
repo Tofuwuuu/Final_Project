@@ -166,7 +166,7 @@ class StudentApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.DashboardPanel.grid(row=0, column=1, sticky="nsew")
-                self.DashboardPanel.UpdateUpcoming(account=self.user_data['account_id'])
+                self.DashboardPanel.UpdateUpcoming()
                 # Show as "selected button"
                 self.ToDashboard.configure(fg_color=("gray75", "gray25"))
                 
@@ -206,6 +206,7 @@ class StudentApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.ConsultationPanel.grid(row=0, column=1, sticky="nsew")
+                self.ConsultationPanel.UpdateDisplay()
                 # Show as "selected button"\
                 self.ToConsultation.configure(fg_color=("gray75", "gray25"))
                 self.selected_panel = name
@@ -218,7 +219,7 @@ class StudentApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.CreationPanel.grid(row=0, column=1, sticky="nsew")
-                self.CreationPanel.UpdateData()
+                self.CreationPanel.UpdateOpenFaculty()
                 # Show as "selected button"
                 self.ToCreation.configure(fg_color=("gray75", "gray25"))
                 self.selected_panel = name

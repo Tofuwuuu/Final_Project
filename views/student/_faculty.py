@@ -41,6 +41,7 @@ class FacultyFrame(ctk.CTkFrame):
         # Theme design, because I can't setup json file for custom theme installation using set_default_theme.
         self.THEME_GREEN = self.master.THEME_GREEN
         self.THEME_YELLOW = self.master.THEME_YELLOW
+        self.THEME_BLUE = self.master.THEME_BLUE
         self.THEME_DARKGREEN = self.master.THEME_DARKGREEN
         self.DEFAULT = self.master.DEFAULT
 
@@ -106,7 +107,7 @@ class FacultyFrame(ctk.CTkFrame):
 
         # Fetch account information
 
-        account_data = [data for data in self.db_instance.FetchFacultyConsultInfo() if data['schedule_id'] == schedule_id and data['scheduled_on'] == schedule]
+        account_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['schedule_id'] == schedule_id and data['scheduled_on'] == schedule]
 
         ConInfoHeader = ctk.CTkFrame(master=self.ConInfoWrapper, fg_color=self.THEME_GREEN)
         ConInfoHeader.grid(row=0, columnspan=1, padx=10, pady=5, ipady=5, sticky="nsew")
@@ -148,7 +149,7 @@ class FacultyFrame(ctk.CTkFrame):
         ConInfoBodyScheduleName = ctk.CTkLabel(master=ConInfoBody, text=f"{account_data[0]['schedule_name']}", font=ctk.CTkFont(family="Poppins", size=15))
         ConInfoBodyScheduleName.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
         
-        ConInfoRequest = ctk.CTkButton(master=ConInfoFooter, text="Request a Consult", image=self.SmallCalendarImage)
+        ConInfoRequest = ctk.CTkButton(master=ConInfoFooter, text="Request a Consult", image=self.SmallCalendarImage, command=lambda:self.master.SelectedPanel("creation"))
         ConInfoRequest.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         
@@ -185,7 +186,7 @@ class FacultyFrame(ctk.CTkFrame):
                 _cache_frame[idx].grid_rowconfigure(2, weight=1)
 
                 # Inner frame for date
-                _cache_inner_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color="transparent")
+                _cache_inner_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color=self.THEME_BLUE, corner_radius=5)
                 _cache_inner_frame[idx].grid(row=0, column=0, padx=10, pady=10, sticky="nsw")
                 _cache_inner_frame[idx].grid_columnconfigure(0, weight=1)
                 _cache_inner_frame[idx].grid_rowconfigure(0, weight=1)
@@ -203,7 +204,9 @@ class FacultyFrame(ctk.CTkFrame):
                 _cache_info_frame[idx].grid_rowconfigure(0, weight=1)
 
                 # Inner day label
-                ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{generated_data[idx]['scheduled_on'].strftime('%b')}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
+                ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{generated_data[idx]['scheduled_on'].strftime('%d')}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, padx=30, sticky="nsew")
+                # Inner Month
+                ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{generated_data[idx]['scheduled_on'].strftime('%B')[0:3]}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=18, weight='bold')).grid(row=1, column=0, sticky="nsew")
                 #Inner Teacher Text
                 ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{generated_data[idx]['username']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
 

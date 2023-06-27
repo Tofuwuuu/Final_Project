@@ -143,12 +143,12 @@ class DashboardFrame(ctk.CTkFrame):
         self.ViewDetailsButton.grid(row=0, column=1, pady=20, padx=50, sticky="w")
 
 
-    def UpdateUpcoming(self, account: int) -> None:
+    def UpdateUpcoming(self) -> None:
         
         """ Reference
         Update upcoming consultation based on realtime database."""
 
-        account_history = self.db_instance.FetchUpcomingConsultations(account)
+        account_history = self.db_instance.FetchUpcomingConsultations(self.user_data['account_id'])
 
         _cache_frame = []
         _cache_inner_frame = []
@@ -156,8 +156,10 @@ class DashboardFrame(ctk.CTkFrame):
         _cache_info_frame = []
 
         # Upcoming account consultation denoted by ("Pending", "Accepted") on column "status"
-        upcoming_data = [data for data in account_history if data['status'] == 'Accepted']
+        upcoming_data = sorted([data for data in account_history if data['status'] == 'Accepted'], key=lambda data: data['scheduled_on'])
         
+        
+
         # Iteration to place dynamic data in the frame
         for idx in range(len(upcoming_data)):
             

@@ -69,7 +69,7 @@ class CalendarFrame(ctk.CTkFrame):
         self.FacultyPicker.grid(row=0, column=1, padx=10, pady=5, ipady=5, ipadx=5, sticky="w")
 
         # CalendarUtilitiesWrapper | Calendar Scheduling Creation Dialog
-        self.ScheduleButton = ctk.CTkButton(self.CaledanrUtilitiesWrapper, image=self.CalendarImage, text="Schedule a Consultation", font=ctk.CTkFont(family="Poppins", size=14))
+        self.ScheduleButton = ctk.CTkButton(self.CaledanrUtilitiesWrapper, command=lambda:self.master.SelectedPanel('creation'), image=self.CalendarImage, text="Schedule a Consultation", font=ctk.CTkFont(family="Poppins", size=14))
         self.ScheduleButton.grid(row=0, column=2, padx=10, pady=5, ipady=5, ipadx=5, sticky="e")
 
         # MainWrapper | Add calendar widget
@@ -83,7 +83,7 @@ class CalendarFrame(ctk.CTkFrame):
         """ Reference
         Query data in tbl_faculty schedules matching the chosen faculty member's username """
 
-        faculty_data = self.db_instance.FetchFacultySchedules()
+        faculty_data = self.db_instance.FetchOpenFacultySchedules()
 
         matching_data = [data for data in faculty_data if data['username'] == username]
 
