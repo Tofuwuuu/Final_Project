@@ -192,3 +192,17 @@ class DBSystem(DBConnect):
         
         except ValueError:
             return False
+        
+    def InsertConsultationSchedule(self, request_data: dict) -> bool:
+        
+        try:
+
+            with self.db.cursor() as cursor:              
+                # SQL query
+                query_script = f"INSERT INTO tbl_faculty (teacher_id, schedule_name, schedule_on, open_at, close_at, status) VALUES ('{request_data['teacher_id']}', '{request_data['schedule_name']}', '{request_data['schedule_on']}', '{request_data['open_at']}', '{request_data['close_at']}', '{request_data['status']}')"
+                cursor.execute(query_script)
+                self.db.commit()
+                return True
+        
+        except ValueError:
+            return False

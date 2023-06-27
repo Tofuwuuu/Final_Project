@@ -14,3 +14,9 @@ def ConvertTime(timedelta: int):
     # Create a time object using the hours and minutes
     _datetime = datetime.time(time_hours, time_minutes)
     return _datetime.strftime('%I:%M %p')
+
+
+def TimeBuilder(hours: int, minutes: int, seconds: int = 00) -> str:
+    """ Build 24-hr time format for timepicker"""
+
+    return ":".join([f"{hours:02d}", f"{minutes:02d}", f"{seconds:02d}"])

@@ -171,7 +171,6 @@ class TeacherApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.CreationPanel.grid(row=0, column=1, sticky="nsew")
-                self.CreationPanel.UpdateOpenFaculty()
                 # Show as "selected button"
                 self.ToCreation.configure(fg_color=("gray75", "gray25"))
                 self.selected_panel = name
