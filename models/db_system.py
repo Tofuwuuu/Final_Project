@@ -76,13 +76,8 @@ class DBSystem(DBConnect):
 
     def FetchFacultyNames(self, asc: bool = True) -> list | None:
          
-        """ Reference:
-        For querying faculty members and their usernames
-
-        Return(s):
-            list: A list of usernames stored in the database.
-            None: None 
-        """
+        """ ## Reference
+        #### returns [username] | role = 'T'"""
 
         with self.db.cursor() as cursor:
             
@@ -98,9 +93,8 @@ class DBSystem(DBConnect):
             
     def FetchOpenFacultySchedules(self) -> list | None:
         
-        """Reference:
-        For querying faculty members schedule, joined table values for tbl_accounts and tbl_consultation
-        """
+        """ ## Reference
+        #### returns UNIQUE [{username, email, first_name, last_name, tbl_faculty.*}] | status = 'Open' | ORDER BY faculty.scheduled_on ASC"""
         
         with self.db.cursor() as cursor:
             
@@ -119,10 +113,8 @@ class DBSystem(DBConnect):
         
     def FetchClosestOpenSchedules(self) -> list | None:
         
-        """Reference:
-        Same implementation as FetchFacultySchedules
-        Returns recent distinct and open status only
-        """
+        """ ## Reference
+        #### returns UNIQUE [{username, tbl_faculty.*}] | status = 'Open'"""
         
         with self.db.cursor() as cursor:
             
@@ -138,8 +130,8 @@ class DBSystem(DBConnect):
             return [dict(zip(legend, idx)) for idx in data]
 
     def FetchUpcomingConsultations(self, account_id: int) -> list | None:
-        """ Reference
-        Fetching the account related consultation schedules """
+        """ ## Reference
+        #### returns same as FetchAccountConsultationHistory: scheduled_on >= sql.CURDATE()"""
          
         with self.db.cursor() as cursor:
             
@@ -152,10 +144,27 @@ class DBSystem(DBConnect):
 
             # Making a list of dictionaries to represent data
             return [dict(zip(legend, idx)) for idx in data]
+        
+    def FetchUpcomingRequest(self, account_id: int) -> list | None:
+        """ ## Reference
+        #### returns same as FetchUpcomingConsultations: For teacher module"""
+            
+        with self.db.cursor() as cursor:
+            
+            # SQL query
+            query_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, con.status, sched.scheduled_on, sched.open_at, sched.close_at FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by LEFT JOIN tbl_faculty AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = sched.teacher_id WHERE sched.teacher_id = {account_id} AND CONVERT(sched.scheduled_on, DATE) >= CURDATE()"
+            cursor.execute(query_script)
+            data = cursor.fetchall()
+            #Get the column names
+            legend = [column[0] for column in cursor.description]
+
+            # Making a list of dictionaries to represent data
+            return [dict(zip(legend, idx)) for idx in data]
 
     def FetchAccountConsultationHistory(self, account_id: int) -> list | None:
-        """ Reference
-        Fetching all of the account related consultation schedules """
+        """ ## Reference
+        #### Fetching all of the account related consultation schedules
+        #### returns [{history_id, task_name, task_description, student.student, teacher.teacher, status, schedule_id, scheduled_on, open_at, close_at, status}]"""
          
         with self.db.cursor() as cursor:
             

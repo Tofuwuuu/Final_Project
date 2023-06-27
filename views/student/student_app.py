@@ -43,7 +43,7 @@ class StudentApp(ctk.CTk):
         self.HomeImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.home_dark), dark_image=res.fetch_image(res.images.nav_ico.home_light), size=(20, 20))
         self.FacultyImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.faculty_dark), dark_image=res.fetch_image(res.images.nav_ico.faculty_light), size=(20, 20))
         self.CalendarImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.calendar_dark), dark_image=res.fetch_image(res.images.nav_ico.calendar_light), size=(20, 20))
-        self.ConsultationImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.consultation_dark), dark_image=res.fetch_image(res.images.nav_ico.consultation_light), size=(20, 20))
+        self.HistoryImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.history_dark), dark_image=res.fetch_image(res.images.nav_ico.history_light), size=(20, 20))
         self.MenuSliderImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.menu_dark), dark_image=res.fetch_image(res.images.nav_ico.menu_light), size=(20, 20))
         self.LogoutImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.logout_dark), dark_image=res.fetch_image(res.images.nav_ico.logout_light), size=(20, 20))
         self.CreateImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.add_dark), dark_image=res.fetch_image(res.images.nav_ico.add_light), size=(20, 20))
@@ -52,7 +52,7 @@ class StudentApp(ctk.CTk):
 
         # Window Configurations
         self.geometry(f"{res.constants.WIN_WIDTH}x{res.constants.WIN_HEIGHT}")
-        self.title(f"CvSU Consult - Welcome, {self.user_data['username']}.")
+        self.title(f"CvSU Consult - Welcome, back teacher.")
         self.iconbitmap(res.images.window_icon)
 
         # set grid layout 1x2
@@ -87,7 +87,7 @@ class StudentApp(ctk.CTk):
         self.ToCalendar.grid(row=4, column=0, sticky="ew")
 
         # Slide panel | Consultations Button
-        self.ToConsultation = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="My Consultations", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.ConsultationImage, anchor="w", command=lambda: self.SelectedPanel("consultation"))
+        self.ToConsultation = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="My Consultations", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.HistoryImage, anchor="w", command=lambda: self.SelectedPanel("consultation"))
         self.ToConsultation.grid(row=5, column=0, sticky="ew")
 
         # Slide panel | Creation Button
