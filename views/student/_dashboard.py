@@ -134,10 +134,6 @@ class DashboardFrame(ctk.CTkFrame):
         self.ConInfoWrapper.grid_columnconfigure(0, weight=1)
         self.ConInfoWrapper.grid_rowconfigure(0, weight=1)
 
-        # Upcoming Consultation Info Wrapper
-        self.ConInfoLabel = ctk.CTkLabel(master=self.ConInfoWrapper, text="No details selected", font=ctk.CTkFont(family="Poppins", size=20, weight="bold"))
-        self.ConInfoLabel.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-
         # ConWrapper | Upcoming Consultations Label
         self.UpcomingConsultationsLabel = ctk.CTkLabel(self.ConWrapper, text="Upcoming Consultations", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
         self.UpcomingConsultationsLabel.grid(row=0, column=0, pady=20, padx=20, sticky="w")
@@ -160,7 +156,7 @@ class DashboardFrame(ctk.CTkFrame):
         _cache_info_frame = []
 
         # Upcoming account consultation denoted by ("Pending", "Accepted") on column "status"
-        upcoming_data = [data for data in account_history if data['status'] == 'Accepted' or 'Pending']
+        upcoming_data = [data for data in account_history if data['status'] == 'Accepted']
         
         # Iteration to place dynamic data in the frame
         for idx in range(len(upcoming_data)):
