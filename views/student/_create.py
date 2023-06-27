@@ -94,8 +94,8 @@ class CreationFrame(ctk.CTkFrame):
     
     def UpdateOpenFaculty(self) -> None:
         open_data = self.db_instance.FetchOpenFacultySchedules()
-        teacher_names = [data['username'] for data in open_data]
-        self.TeacherEntry.configure(values=teacher_names)
+        teacher_names = {data['username'] for data in open_data}
+        self.TeacherEntry.configure(values=list(teacher_names))
 
     def UpdateOpenDate(self, value: str) -> None:
         open_data = self.db_instance.FetchOpenFacultySchedules()

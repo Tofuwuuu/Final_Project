@@ -15,8 +15,8 @@ class CreationFrame(ctk.CTkFrame):
     PLACEHOLDER_TIME = 'Pick a time'
 
 
-    def __init__(master, self, *args, **kwargs):
-        super().__init__(master,*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         # user data defined by the master
         self.user_data = self.master.user_data
@@ -94,8 +94,8 @@ class CreationFrame(ctk.CTkFrame):
     
     def UpdateOpenFaculty(self) -> None:
         open_data = self.db_instance.FetchOpenFacultySchedules()
-        teacher_names = [data['username'] for data in open_data]
-        self.TeacherEntry.configure(values=teacher_names)
+        teacher_names = {data['username'] for data in open_data}
+        self.TeacherEntry.configure(values=list(teacher_names))
 
     def UpdateOpenDate(self, value: str) -> None:
         open_data = self.db_instance.FetchOpenFacultySchedules()
