@@ -46,7 +46,7 @@ class StudentApp(ctk.CTk):
         self.ConsultationImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.consultation_dark), dark_image=res.fetch_image(res.images.nav_ico.consultation_light), size=(20, 20))
         self.MenuSliderImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.menu_dark), dark_image=res.fetch_image(res.images.nav_ico.menu_light), size=(20, 20))
         self.LogoutImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.logout_dark), dark_image=res.fetch_image(res.images.nav_ico.logout_light), size=(20, 20))
-        self.AddImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.add_dark), dark_image=res.fetch_image(res.images.nav_ico.add_light), size=(20, 20))
+        self.CreateImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.add_dark), dark_image=res.fetch_image(res.images.nav_ico.add_light), size=(20, 20))
 
         """ End of resource pathing """
 
@@ -91,7 +91,7 @@ class StudentApp(ctk.CTk):
         self.ToConsultation.grid(row=5, column=0, sticky="ew")
 
         # Slide panel | Creation Button
-        self.ToCreation = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Create Consultation", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.AddImage, anchor="w", command=lambda: self.SelectedPanel("creation"))
+        self.ToCreation = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Create Consultation", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.CreateImage, anchor="w", command=lambda: self.SelectedPanel("creation"))
         self.ToCreation.grid(row=6, column=0, sticky="ew")
 
         # Slide panel | Theme Dropdown
@@ -126,7 +126,7 @@ class StudentApp(ctk.CTk):
             self.ToFaculty.configure(text="Faculty Schedules", anchor="w")
             self.ToCalendar.configure(text="Calendar", anchor="w")
             self.ToConsultation.configure(text="My Consultations", anchor="w")
-            self.ToCreation.configure(text="Creation", anchor="w")
+            self.ToCreation.configure(text="Create Consultations", anchor="w")
             self.Logout.configure(text="Logout", anchor="w")
             self.Logout.grid(row=8, column=0, pady=5, padx=5, sticky="s")
 
@@ -206,7 +206,7 @@ class StudentApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.ConsultationPanel.grid(row=0, column=1, sticky="nsew")
-                # Show as "selected button"
+                # Show as "selected button"\
                 self.ToConsultation.configure(fg_color=("gray75", "gray25"))
                 self.selected_panel = name
             else:
@@ -214,10 +214,11 @@ class StudentApp(ctk.CTk):
         else:
             self.ConsultationPanel.grid_forget()
 
-        if name == "Creation":
+        if name == "creation":
             if self.selected_panel != name:
                 # Display
                 self.CreationPanel.grid(row=0, column=1, sticky="nsew")
+                self.CreationPanel.UpdateData()
                 # Show as "selected button"
                 self.ToCreation.configure(fg_color=("gray75", "gray25"))
                 self.selected_panel = name

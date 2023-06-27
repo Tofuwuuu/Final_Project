@@ -6,7 +6,7 @@ Reference frame for main_init.py
 import customtkinter as ctk
 import tkinter as tk
 import models.resources as res
-import datetime
+import models.datetimeformatter as dtf
 
 class DashboardFrame(ctk.CTkFrame):
 
@@ -152,20 +152,16 @@ class DashboardFrame(ctk.CTkFrame):
         """ Reference
         Update upcoming consultation based on realtime database."""
 
-        account_history = self.db_instance.FetchUserHistory(account)
+        account_history = self.db_instance.FetchUpcomingConsultations(account)
 
         _cache_frame = []
         _cache_inner_frame = []
         _cache_teacher_frame = []
         _cache_info_frame = []
 
-        # Sort by username of the teacher
-        sorted_faculty = sorted(account_history, key=lambda x: x["teacher"])
-
         # Upcoming account consultation denoted by ("Pending", "Accepted") on column "status"
-        upcoming_data = [data for data in sorted_faculty if data['status'] == 'Accepted' or 'Pending']
+        upcoming_data = [data for data in account_history if data['status'] == 'Accepted' or 'Pending']
         
-
         # Iteration to place dynamic data in the frame
         for idx in range(len(upcoming_data)):
             
@@ -206,24 +202,11 @@ class DashboardFrame(ctk.CTkFrame):
             #Inner Teacher Text
             ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{upcoming_data[idx]['teacher']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
 
+
             # timedelta lost my sanity. It is not even a timezone conversion wtf.
-            session_start = upcoming_data[idx]['open_at']
-            session_end = upcoming_data[idx]['close_at']
-
-            # Get the total seconds from the timedelta
-            total_start = int(session_start.total_seconds())
-            total_end = int(session_end.total_seconds())
-
-            # Convert the total seconds to hours and minutes
-            start_hours = total_start // 3600
-            start_minutes = (total_start % 3600) // 60
-            end_hours = total_end // 3600
-            end_minutes = (total_end % 3600) // 60
-            # Create a time object using the hours and minutes
-            start_time_obj = datetime.time(start_hours, start_minutes)
-            end_time_obj = datetime.time(end_hours, end_minutes)
-            
-            formatted_time = f"{start_time_obj.strftime('%I:%M %p')} - {end_time_obj.strftime('%I:%M %p')}"
+            session_start = dtf.ConvertTime(upcoming_data[idx]['open_at'])
+            session_end = dtf.ConvertTime(upcoming_data[idx]['close_at'])
+            formatted_time = f"{session_start} - {session_end}"
 
             # Inner TimeSpan in TeacherWrapper
             ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{formatted_time}", text_color="white", font=ctk.CTkFont(family="Poppins", size=10)).grid(row=1, column=0, sticky="nsew")

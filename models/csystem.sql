@@ -79,5 +79,5 @@ VALUES
     ('Task 3', 'Description 3', 100001, 100004, 'Pending'),
     ('Task 4', 'Description 3', 100001, 100008, 'Ended');
 
-
+SELECT teacher.username, sched.* FROM tbl_accounts AS teacher LEFT JOIN tbl_faculty AS sched ON teacher.account_id = sched.teacher_id WHERE teacher.role = 'T' AND sched.status = 'Open' ORDER BY sched.scheduled_on ASC
     

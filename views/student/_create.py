@@ -6,17 +6,21 @@ Reference frame for main_init.py
 import customtkinter as ctk
 import tkinter as tk
 import models.resources as res
+import models.datetimeformatter as dtf
 
 class CreationFrame(ctk.CTkFrame):
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         # user data defined by the master
         self.user_data = self.master.user_data
-
+        
         # Instance of the database inherit from the master application window
         self.db_instance = self.master.db_instance
+
+
 
         # load images with light and dark mode image
         """ File directory pathing for images """
@@ -43,7 +47,7 @@ class CreationFrame(ctk.CTkFrame):
         self.TitleWrapper.grid_columnconfigure(0, weight=1)
 
         # TitleWrapper | TitleWrapper Welcome Message
-        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Settings", text_color="black", font=ctk.CTkFont(family="Poppins", size=24, weight='bold'))
+        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Create a Consultation Request", text_color="black", font=ctk.CTkFont(family="Poppins", size=24, weight='bold'))
         self.TitleLabel.grid(row=0, column=0, pady=20, padx=10, sticky="w")
 
         # TitleWrapper | Notifications
@@ -54,3 +58,46 @@ class CreationFrame(ctk.CTkFrame):
         self.MainWrapper = ctk.CTkFrame(master=self, fg_color=self.THEME_GREEN)
         self.MainWrapper.grid(row=1, columnspan=1, padx=20, pady=10, sticky="nsew")
         self.MainWrapper.grid_columnconfigure(0, weight=1)
+
+        # Teacher
+        self.TeacherEntry = ctk.CTkOptionMenu(master=self.MainWrapper,command=lambda value: self.NextToName(value), values=['Choose a Teacher'])
+        self.TeacherEntry.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+
+        # Open Dates
+        self.TeacherOpenDateMenu = ctk.CTkOptionMenu(master=self.MainWrapper, command=lambda value: self.NextToDate(value), values=['Pick a Date'], state='disabled')
+        self.TeacherOpenDateMenu.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+
+        # Open Dates
+        self.TeacherOpenTimeMenu = ctk.CTkOptionMenu(master=self.MainWrapper, values=['Pick a Time'], state='disabled')
+        self.TeacherOpenTimeMenu.grid(row=2, column=0, padx=5, pady=5, sticky="nsew")
+
+        # Task Name
+        self.RequestTitle = ctk.CTkEntry(master=self.MainWrapper, placeholder_text="Add a request title")
+        self.RequestTitle.grid(row=3, column=0, padx=5, pady=5, sticky="nsew")
+
+        # Open Dates
+        self.RequestBody = ctk.CTkEntry(master=self.MainWrapper, placeholder_text="Add a request description")
+        self.RequestBody.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
+
+        # Open RequestButton
+        self.RequestButton = ctk.CTkButton(master=self.MainWrapper, text="Place a request")
+        self.RequestButton.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
+    
+    def UpdateData(self):
+
+        TeacherValue = [data['username'] for data in self.db_instance.FetchOpenFacultySchedules()]
+        DateValue = [str(data['scheduled_on']) for data in self.db_instance.FetchOpenFacultySchedules()]
+        TimeValue = [dtf.ConvertTime(data['open_at']) for data in self.db_instance.FetchOpenFacultySchedules()]
+
+        self.TeacherEntry.configure(values=TeacherValue)
+        self.TeacherOpenDateMenu.configure(values=DateValue)
+        self.TeacherOpenTimeMenu.configure(values=TimeValue)
+        
+    
+    def NextToName(self, name: str) -> None:
+        if (isinstance(name, (str))) and name != "Choose a teacher":
+            self.TeacherOpenDateMenu.configure(state="NORMAL")
+    
+    def NextToDate(self, date: str) -> None:
+        if (isinstance(date, (str))) and date != "Pick a Date":
+            self.TeacherOpenTimeMenu.configure(state="NORMAL")
