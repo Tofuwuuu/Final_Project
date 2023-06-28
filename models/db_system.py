@@ -152,7 +152,7 @@ class DBSystem(DBConnect):
         with self.db.cursor() as cursor:
             
             # SQL query
-            query_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, con.status, sched.scheduled_on, sched.open_at, sched.close_at FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by LEFT JOIN tbl_faculty AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = sched.teacher_id WHERE sched.teacher_id = {account_id} AND CONVERT(sched.scheduled_on, DATE) >= CURDATE()"
+            query_script = f"SELECT con.history_id, sched.schedule_id, teacher.account_id, con.task_name, con.task_description, sched.schedule_name, student.username AS student, teacher.username AS teacher, con.status AS request_status, sched.scheduled_on, sched.open_at, sched.close_at, sched.status AS schedule_status FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by LEFT JOIN tbl_faculty AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = sched.teacher_id WHERE sched.teacher_id = {account_id} AND CONVERT(sched.scheduled_on, DATE) >= CURDATE()"
             cursor.execute(query_script)
             data = cursor.fetchall()
             #Get the column names
@@ -200,6 +200,37 @@ class DBSystem(DBConnect):
             with self.db.cursor() as cursor:              
                 # SQL query
                 query_script = f"INSERT INTO tbl_faculty (teacher_id, schedule_name, schedule_on, open_at, close_at, status) VALUES ('{request_data['teacher_id']}', '{request_data['schedule_name']}', '{request_data['schedule_on']}', '{request_data['open_at']}', '{request_data['close_at']}', '{request_data['status']}')"
+                cursor.execute(query_script)
+                self.db.commit()
+                return True
+        
+        except ValueError:
+            return False
+        
+    def AcceptRequestOnDB(self, schedule_id: int, history_id: int) -> bool:
+        """ Update existing faculty and consultation request status for specific schedule_id and history_Id """
+        
+        try:
+            with self.db.cursor() as cursor:
+                # SQL query
+                schedule_script = f"UPDATE tbl_faculty SET status = 'Reserved' WHERE schedule_id = {schedule_id}"
+                consultation_script = f"UPDATE tbl_consultations SET status = 'Accepted' WHERE history_id = {history_id}"
+                cursor.execute(schedule_script)
+                cursor.execute(consultation_script)
+                self.db.commit()
+                return True
+        
+        except ValueError:
+            return False
+        
+    def DenyRequestOnDB(self, history_id: int) -> bool:
+        """ Update existing faculty and consultation request status for specific schedule_id and history_Id """
+        
+        try:
+
+            with self.db.cursor() as cursor:              
+                # SQL query
+                query_script = f"""UPDATE tbl_consultations SET status = 'Rejected' WHERE history_id = {history_id};"""
                 cursor.execute(query_script)
                 self.db.commit()
                 return True

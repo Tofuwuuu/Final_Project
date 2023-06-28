@@ -5,6 +5,7 @@ This is a frame file. You can't run this file as a "__main__".
 import customtkinter as ctk
 from models.db_system import DBSystem
 from ._dashboard import DashboardFrame
+from ._request import RequestFrame
 from ._history import HistoryFrame
 from ._create import CreationFrame
 from .. import init_app
@@ -73,25 +74,32 @@ class TeacherApp(ctk.CTk):
         self.ToDashboard = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Dashboard", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.HomeImage, anchor="w", command=lambda: self.SelectedPanel("dashboard"))
         self.ToDashboard.grid(row=2, column=0, sticky="ew")
 
+        # Slide panel | Dashboard/Home Button
+        self.ToRequest = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Pending Requests", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.HomeImage, anchor="w", command=lambda: self.SelectedPanel("request"))
+        self.ToRequest.grid(row=3, column=0, sticky="ew")
+
+
         # Slide panel | History Button
         self.ToHistory = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="History", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.HistoryImage, anchor="w", command=lambda: self.SelectedPanel("history"))
-        self.ToHistory.grid(row=5, column=0, sticky="ew")
+        self.ToHistory.grid(row=4, column=0, sticky="ew")
 
         # Slide panel | Settings Button
         self.ToCreation = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Open a consultation", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), image=self.CreationImage, anchor="w", command=lambda: self.SelectedPanel("creation"))
-        self.ToCreation.grid(row=6, column=0, sticky="ew")
+        self.ToCreation.grid(row=5, column=0, sticky="ew")
 
         # Slide panel | Theme Dropdown
         self.ThemeMode = ctk.CTkOptionMenu(self.SlidePanel, values=["Light", "Dark"], command=lambda mode: ctk.set_appearance_mode(mode), fg_color=self.THEME_DARKGREEN, dropdown_fg_color=self.THEME_DARKGREEN, button_color=self.THEME_DARKGREEN, button_hover_color=self.THEME_DARKGREEN, text_color=("black", "white"))
-        self.ThemeMode.grid(row=7, column=0, padx=5, pady=5, sticky="s")
+        self.ThemeMode.grid(row=6, column=0, padx=5, pady=5, sticky="s")
 
         # Slide panel | Logout Button
 
         self.Logout = ctk.CTkButton(self.SlidePanel, image=self.LogoutImage, width=10, corner_radius=0, height=10, border_spacing=10, text="Logout", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"), anchor="w", command=lambda: self.logout_handler())
-        self.Logout.grid(row=8, column=0, pady=5, padx=5, sticky="s")
+        self.Logout.grid(row=7, column=0, pady=5, padx=5, sticky="s")
 
         # Dashboard | Home Panel - Implementation and Configurations on ./_dashboard.py
         self.DashboardPanel = DashboardFrame(master=self, corner_radius=0, fg_color="transparent")
+        # Dashboard | Home Panel - Implementation and Configurations on ./_dashboard.py
+        self.RequestPanel = RequestFrame(master=self, corner_radius=0, fg_color="transparent")
         # Consultation | Consultation Panel - Implementation and Configurations on ./_consultation.py
         self.HistoryPanel = HistoryFrame(master=self, corner_radius=0, fg_color="transparent")
         # Settings | Settings Panel - Implementation and Configurations on ./_settings.py
@@ -106,6 +114,7 @@ class TeacherApp(ctk.CTk):
             self.BurgerBtn.grid(row=0, column=0, sticky="e")
             self.SlidePanelTitle.configure(text=" CvSU Consult ", anchor="center")
             self.ToDashboard.configure(text="Dashboard", anchor="w")
+            self.ToRequest.configure(text="Request", anchor="w")
             self.ToHistory.configure(text="My History", anchor="w")
             self.ToCreation.configure(text="Settings", anchor="w")
             self.Logout.configure(text="Logout", anchor="w")
@@ -118,6 +127,7 @@ class TeacherApp(ctk.CTk):
             self.BurgerBtn.grid(row=0, column=0, sticky="ew")
             self.SlidePanelTitle.configure(text="", anchor="center")
             self.ToDashboard.configure(text=None, anchor="center")
+            self.ToRequest.configure(text=None, anchor="w")
             self.ToHistory.configure(text=None, anchor="center")
             self.ToCreation.configure(text=None, anchor="center")
             self.Logout.configure(text=None, anchor="center")
@@ -136,7 +146,7 @@ class TeacherApp(ctk.CTk):
     def SelectedPanel(self, name) -> None:
 
         # Clean selected frame on call
-        frames = [self.ToDashboard, self.ToHistory, self.ToCreation]
+        frames = [self.ToDashboard, self.ToRequest, self.ToHistory, self.ToCreation]
         for f in frames:
             f.configure(fg_color="transparent")
 
@@ -154,6 +164,20 @@ class TeacherApp(ctk.CTk):
                 pass
         else:
             self.DashboardPanel.grid_forget()
+
+
+        if name == "request":
+            if self.selected_panel != name:
+                # Display
+                self.RequestPanel.grid(row=0, column=1, sticky="nsew")
+                self.RequestPanel.UpdateRequest()
+                # Show as "selected button"\
+                self.ToRequest.configure(fg_color=("gray75", "gray25"))
+                self.selected_panel = name
+            else:
+                pass
+        else:
+            self.RequestPanel.grid_forget()
 
         if name == "history":
             if self.selected_panel != name:
