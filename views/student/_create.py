@@ -125,7 +125,7 @@ class CreationFrame(ctk.CTkFrame):
         user_generated_consultation_data = self.db_instance.FetchAccountConsultationHistory(self.user_data['account_id'])
         form_schedule_ids = [data['schedule_id'] for data in user_generated_consultation_data]
         teacher_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['username'] == form_data['teacher'] and str(data['scheduled_on']) == form_data['date'] and dtf.ConvertTime(data['open_at']) == form_data['time']]
-        if teacher_data[0]['schedule_id'] in form_schedule_ids:
+        if teacher_data and teacher_data[0]['schedule_id'] in form_schedule_ids:
             return True
         else:
             return False

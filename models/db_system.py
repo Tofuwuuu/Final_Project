@@ -160,6 +160,22 @@ class DBSystem(DBConnect):
 
             # Making a list of dictionaries to represent data
             return [dict(zip(legend, idx)) for idx in data]
+        
+    def FetchRequestHistory(self, account_id: int) -> list | None:
+        """ ## Reference
+        #### returns all request history referencing the account_id"""
+            
+        with self.db.cursor() as cursor:
+            
+            # SQL query
+            query_script = f"SELECT con.history_id, sched.schedule_id, teacher.account_id, con.task_name, con.task_description, sched.schedule_name, student.username AS student, teacher.username AS teacher, con.status AS request_status, sched.scheduled_on, sched.open_at, sched.close_at, sched.status AS schedule_status FROM tbl_consultations AS con LEFT JOIN tbl_accounts AS student ON student.account_id = con.created_by LEFT JOIN tbl_faculty AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN tbl_accounts AS teacher ON teacher.account_id = sched.teacher_id WHERE sched.teacher_id = {account_id} "
+            cursor.execute(query_script)
+            data = cursor.fetchall()
+            #Get the column names
+            legend = [column[0] for column in cursor.description]
+
+            # Making a list of dictionaries to represent data
+            return [dict(zip(legend, idx)) for idx in data]
 
     def FetchAccountConsultationHistory(self, account_id: int) -> list | None:
         """ ## Reference

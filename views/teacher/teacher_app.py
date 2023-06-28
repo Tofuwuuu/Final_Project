@@ -183,6 +183,7 @@ class TeacherApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.HistoryPanel.grid(row=0, column=1, sticky="nsew")
+                self.HistoryPanel.UpdateHistory()
                 # Show as "selected button"\
                 self.ToHistory.configure(fg_color=("gray75", "gray25"))
                 self.selected_panel = name
