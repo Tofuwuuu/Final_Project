@@ -110,7 +110,7 @@ class ConsultationFrame(ctk.CTkFrame):
         if asc == "Ascending":
             account_history = sorted(account_history, key=lambda x: x["scheduled_on"])
         elif asc == "Descending":
-            account_history = sorted(account_history, key=lambda x: x["scheduled_on"], reverse=True)
+              account_history = sorted(account_history, key=lambda x: x["scheduled_on"], reverse=True)
         
         # Iteration to place dynamic data in the frame
         for idx in range(len(account_history)):

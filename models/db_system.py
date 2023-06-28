@@ -129,7 +129,7 @@ class DBSystem(DBConnect):
         with self.db.cursor() as cursor:
             try:
                 # SQL query
-                fetch_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, con.status, sched.scheduled_on, sched.open_at, sched.close_at FROM consultation_histories AS con LEFT JOIN account_students AS student ON student.student_id = con.student_id LEFT JOIN faculty_schedules AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN account_teachers AS teacher ON teacher.teacher_id = sched.teacher_id WHERE student.student_id = {account_id} AND CONVERT(sched.scheduled_on, DATE) >= CURDATE()"
+                fetch_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.prefix, teacher.username AS teacher, con.status, sched.scheduled_on, sched.open_at, sched.close_at FROM consultation_histories AS con LEFT JOIN account_students AS student ON student.student_id = con.student_id LEFT JOIN faculty_schedules AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN account_teachers AS teacher ON teacher.teacher_id = sched.teacher_id WHERE student.student_id = {account_id} AND CONVERT(sched.scheduled_on, DATE) >= CURDATE()"
                 cursor.execute(fetch_script)
                 data = cursor.fetchall()
                 #Get the column names

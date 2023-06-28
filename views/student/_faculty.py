@@ -196,7 +196,7 @@ class FacultyFrame(ctk.CTkFrame):
                 self._cache_inner_frame[idx].grid_rowconfigure(0, weight=1)
 
                 # Inner frame for Schedule Info
-                self._cache_teacher_frame[idx] = ctk.CTkFrame(master=self.cache_frame[idx], fg_color="transparent")
+                self._cache_teacher_frame[idx] = ctk.CTkFrame(master=self._cache_frame[idx], fg_color="transparent")
                 self._cache_teacher_frame[idx].grid(row=0, column=1, padx=10, pady=10, sticky="nsw")
                 self._cache_teacher_frame[idx].grid_columnconfigure(0, weight=1)
                 self._cache_teacher_frame[idx].grid_rowconfigure(0, weight=1)

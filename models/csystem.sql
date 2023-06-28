@@ -65,7 +65,7 @@ VALUES (200000, 'Mr','John', 'Moe', 'John Moe', 'johnmoe@gmail.com', 300002),
        (200001, 'Mr', 'Nortz', 'Alingod', 'Nortz Alingod', 'nortzalingod@gmail.com', 300003),
        (200002, 'Ms', 'Jackie', 'Murallon', 'Jackie Murallon', 'jackiemurallon@gmail.com', 300004),
        (200003, 'Mr', 'Antonio', 'Gaspar', 'Antonio Gaspar', 'antoniogaspar@gmail.com', 300005),
-       (200004, 'Mr', 'Kenver', 'Maliyan', 'Kenver Maliyan', 'Kenver Maliyan@gmail.com', 300006),
+       (200004, 'Mr', 'Kenver', 'Maliyan', 'Kenver Maliyan', 'kenvermaliyan@gmail.com', 300006),
        (200005, 'Mrs', 'Aliyana', 'Samonte', 'Aliyana Samonte', 'aliyanasamonte@gmail.com', 300007),
        (200006, 'Mr', 'Samson', 'Miguel', 'Samson Miguel', 'samsonmiguel@gmail.com', 300008);
 
