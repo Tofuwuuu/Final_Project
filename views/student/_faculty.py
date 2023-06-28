@@ -19,6 +19,12 @@ class FacultyFrame(ctk.CTkFrame):
         # Instance of the database inherit from the master application window
         self.db_instance = self.master.db_instance
 
+        # cache data
+        self._cache_frame = []
+        self._cache_inner_frame = []
+        self._cache_teacher_frame = []
+        self._cache_info_frame = []
+
         # load images with light and dark mode image
         """ File directory pathing for images """
         self.FacultyImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.faculty_dark), dark_image=res.fetch_image(res.images.nav_ico.faculty_light), size=(80, 80))
@@ -158,60 +164,58 @@ class FacultyFrame(ctk.CTkFrame):
             """ Reference
             Display faculty members as bars"""
 
-            generated_data = self.db_instance.FetchClosestOpenSchedules()
+            fetched_data = self.db_instance.FetchOpenFacultySchedules()
+            
 
-            _cache_frame = []
-            _cache_inner_frame = []
-            _cache_teacher_frame = []
-            _cache_info_frame = []
+
 
             if asc == "Ascending":
-                generated_data = sorted(generated_data, key=lambda x: x["username"])
+                fetched_data = sorted(fetched_data, key=lambda x: x["username"])
             elif asc == "Descending":
-                generated_data = sorted(generated_data, key=lambda x: x["username"], reverse=True)
+                fetched_data = sorted(fetched_data, key=lambda x: x["username"], reverse=True)
 
             # Iteration to place dynamic data in the frame
-            for idx in range(len(generated_data)):
+            for idx in range(len(fetched_data)):
                 
                 # Initializing cache variables
-                _cache_frame.append("_cache_frame_".join(str(idx)))
-                _cache_inner_frame.append("_cache_inner_frame_".join(str(idx)))
-                _cache_teacher_frame.append("_cache_teacher_frame_".join(str(idx)))
-                _cache_info_frame.append("_cache_info_frame_".join(str(idx)))
+                self._cache_frame.append("_cache_frame_".join(str(idx)))
+                self._cache_inner_frame.append("_cache_inner_frame_".join(str(idx)))
+                self._cache_teacher_frame.append("_cache_teacher_frame_".join(str(idx)))
+                self._cache_info_frame.append("_cache_info_frame_".join(str(idx)))
 
                 # Main frame
-                _cache_frame[idx] = ctk.CTkFrame(master=self.FacultyDataWrapper, fg_color=self.THEME_GREEN)
-                _cache_frame[idx].grid(row=idx, column=0, pady=5, padx=5, sticky="nsew")
-                _cache_frame[idx].grid_columnconfigure(3, weight=1)
-                _cache_frame[idx].grid_rowconfigure(2, weight=1)
+                self._cache_frame[idx] = ctk.CTkFrame(master=self.FacultyDataWrapper, fg_color=self.THEME_GREEN)
+                self._cache_frame[idx].grid(row=idx, column=0, pady=5, padx=5, sticky="nsew")
+                self._cache_frame[idx].grid_columnconfigure(3, weight=1)
+                self._cache_frame[idx].grid_rowconfigure(2, weight=1)
 
                 # Inner frame for date
-                _cache_inner_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color=self.THEME_BLUE, corner_radius=5)
-                _cache_inner_frame[idx].grid(row=0, column=0, padx=10, pady=10, sticky="nsw")
-                _cache_inner_frame[idx].grid_columnconfigure(0, weight=1)
-                _cache_inner_frame[idx].grid_rowconfigure(0, weight=1)
+                self._cache_inner_frame[idx] = ctk.CTkFrame(master=self._cache_frame[idx], fg_color=self.THEME_BLUE, corner_radius=5)
+                self._cache_inner_frame[idx].grid(row=0, column=0, padx=10, pady=10, sticky="nsw")
+                self._cache_inner_frame[idx].grid_columnconfigure(0, weight=1)
+                self._cache_inner_frame[idx].grid_rowconfigure(0, weight=1)
 
                 # Inner frame for Schedule Info
-                _cache_teacher_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color="transparent")
-                _cache_teacher_frame[idx].grid(row=0, column=1, padx=10, pady=10, sticky="nsw")
-                _cache_teacher_frame[idx].grid_columnconfigure(0, weight=1)
-                _cache_teacher_frame[idx].grid_rowconfigure(0, weight=1)
+                self._cache_teacher_frame[idx] = ctk.CTkFrame(master=self.cache_frame[idx], fg_color="transparent")
+                self._cache_teacher_frame[idx].grid(row=0, column=1, padx=10, pady=10, sticky="nsw")
+                self._cache_teacher_frame[idx].grid_columnconfigure(0, weight=1)
+                self._cache_teacher_frame[idx].grid_rowconfigure(0, weight=1)
 
                 # Inner frame for Informations
-                _cache_info_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color="transparent")
-                _cache_info_frame[idx].grid(row=0, column=2, padx=10, pady=10, sticky="nsw")
-                _cache_info_frame[idx].grid_columnconfigure(0, weight=1)
-                _cache_info_frame[idx].grid_rowconfigure(0, weight=1)
+                self._cache_info_frame[idx] = ctk.CTkFrame(master=self._cache_frame[idx], fg_color="transparent")
+                self._cache_info_frame[idx].grid(row=0, column=2, padx=10, pady=10, sticky="nsw")
+                self._cache_info_frame[idx].grid_columnconfigure(0, weight=1)
+                self._cache_info_frame[idx].grid_rowconfigure(0, weight=1)
 
                 # Inner day label
-                ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{generated_data[idx]['scheduled_on'].strftime('%d')}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, padx=30, sticky="nsew")
+                ctk.CTkLabel(master=self._cache_inner_frame[idx], text=f"{fetched_data[idx]['scheduled_on'].strftime('%d')}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, padx=30, sticky="nsew")
                 # Inner Month
-                ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{generated_data[idx]['scheduled_on'].strftime('%B')[0:3]}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=18, weight='bold')).grid(row=1, column=0, sticky="nsew")
+                ctk.CTkLabel(master=self._cache_inner_frame[idx], text=f"{fetched_data[idx]['scheduled_on'].strftime('%B')[0:3]}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=18, weight='bold')).grid(row=1, column=0, sticky="nsew")
                 #Inner Teacher Text
-                ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{generated_data[idx]['username']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
+                ctk.CTkLabel(master=self._cache_teacher_frame[idx], text=f"{fetched_data[idx]['username']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
 
-                session_start = generated_data[idx]['open_at']
-                session_end = generated_data[idx]['close_at']
+                session_start = fetched_data[idx]['open_at']
+                session_end = fetched_data[idx]['close_at']
 
                 # Get the total seconds from the timedelta
                 total_start = int(session_start.total_seconds())
@@ -229,8 +233,8 @@ class FacultyFrame(ctk.CTkFrame):
                 formatted_time = f"{start_time_obj.strftime('%I:%M %p')} - {end_time_obj.strftime('%I:%M %p')}"
 
                 # Inner TimeSpan in TeacherWrapper
-                ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"Time period: {formatted_time}", text_color="white", font=ctk.CTkFont(family="Poppins", size=10)).grid(row=1, column=0, sticky="nsew")
+                ctk.CTkLabel(master=self._cache_teacher_frame[idx], text=f"Time period: {formatted_time}", text_color="white", font=ctk.CTkFont(family="Poppins", size=10)).grid(row=1, column=0, sticky="nsew")
                 # Status if Open or Reserved by tbl_faculty
-                ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{generated_data[idx]['status']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=12)).grid(row=0, column=0, sticky="nsew")
+                ctk.CTkLabel(master=self._cache_info_frame[idx], text=f"{fetched_data[idx]['status']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=12)).grid(row=0, column=0, sticky="nsew")
                 # Button GG go next
-                ctk.CTkButton(master=_cache_frame[idx], command=lambda key = idx: self.DisplayFacultyInfo(schedule_id=generated_data[key]['schedule_id'], schedule=generated_data[key]['scheduled_on']), image=self.GoNextImage, text=None, fg_color=self.THEME_YELLOW).grid(row=0, column=3, padx=20, pady=10, sticky="e")
+                ctk.CTkButton(master=self._cache_frame[idx], image=self.GoNextImage, text=None, fg_color=self.THEME_YELLOW).grid(row=0, column=3, padx=20, pady=10, sticky="e")

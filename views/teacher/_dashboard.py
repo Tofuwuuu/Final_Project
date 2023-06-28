@@ -106,7 +106,7 @@ class DashboardFrame(ctk.CTkFrame):
         """ Reference
         Update upcoming consultation based on realtime database."""
 
-        account_history = self.db_instance.FetchUpcomingRequest(self.user_data['account_id'])
+        account_history = self.db_instance.FetchStudentRequest(self.user_data['teacher_id'])
 
         _cache_frame = []
         _cache_inner_frame = []

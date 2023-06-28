@@ -14,10 +14,13 @@ _image_nav_path = _image_path + "nav-icons\\"
 __image_cache = {}
 
 class constants:
+
+    
     WIN_SMALL_WIDTH = 900
     WIN_SMALL_HEIGHT = 600
     WIN_WIDTH = 1200
     WIN_HEIGHT = 800
+    REGEX_EMAIL = r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
 
 class fonts:
     pass

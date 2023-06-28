@@ -100,22 +100,20 @@ class ConsultationFrame(ctk.CTkFrame):
         """ Reference
         Show all consultations related to this {account}"""
 
-        account_history = self.db_instance.FetchAccountConsultationHistory(self.user_data['account_id'])
+        account_history = self.db_instance.FetchStudentHistory(self.user_data['student_id'])
 
         _cache_frame = []
         _cache_inner_frame = []
         _cache_teacher_frame = []
         _cache_info_frame = []
 
-        generated_data = [data for data in account_history]
-
         if asc == "Ascending":
-            generated_data = sorted(generated_data, key=lambda x: x["scheduled_on"])
+            account_history = sorted(account_history, key=lambda x: x["scheduled_on"])
         elif asc == "Descending":
-            generated_data = sorted(generated_data, key=lambda x: x["scheduled_on"], reverse=True)
+            account_history = sorted(account_history, key=lambda x: x["scheduled_on"], reverse=True)
         
         # Iteration to place dynamic data in the frame
-        for idx in range(len(generated_data)):
+        for idx in range(len(account_history)):
             
             # Initializing cache variables
             _cache_frame.append("_cache_frame_".join(str(idx)))
@@ -148,23 +146,23 @@ class ConsultationFrame(ctk.CTkFrame):
             _cache_info_frame[idx].grid_rowconfigure(0, weight=1)
 
             # Inner day label
-            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{generated_data[idx]['scheduled_on'].strftime('%d')}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, padx=30, sticky="nsew")
+            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{account_history[idx]['scheduled_on'].strftime('%d')}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, padx=30, sticky="nsew")
             # Inner Month
-            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{generated_data[idx]['scheduled_on'].strftime('%B')[0:3]}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=18, weight='bold')).grid(row=1, column=0, sticky="nsew")
+            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{account_history[idx]['scheduled_on'].strftime('%B')[0:3]}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=18, weight='bold')).grid(row=1, column=0, sticky="nsew")
             #Inner Teacher Text
-            ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{generated_data[idx]['teacher']}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
+            ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{account_history[idx]['teacher']}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
 
 
             # timedelta lost my sanity. It is not even a timezone conversion wtf.
-            session_start = dtf.ConvertTime(generated_data[idx]['open_at'])
-            session_end = dtf.ConvertTime(generated_data[idx]['close_at'])
+            session_start = dtf.ConvertTime(account_history[idx]['open_at'])
+            session_end = dtf.ConvertTime(account_history[idx]['close_at'])
             formatted_time = f"{session_start} - {session_end}"
 
             # Inner TimeSpan in TeacherWrapper
             ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{formatted_time}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=12)).grid(row=1, column=0, sticky="w")
             # Inner TimeSpan in TeacherWrapper
-            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{generated_data[idx]['task_name']}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=13, weight='bold')).grid(row=0, column=0, sticky="nsew")
+            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{account_history[idx]['task_name']}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=13, weight='bold')).grid(row=0, column=0, sticky="nsew")
             # Inner TimeSpan in TeacherWrapper
-            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"    {generated_data[idx]['status']}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=12)).grid(row=1, column=0, padx=30, sticky="w")
+            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"    {account_history[idx]['status']}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=12)).grid(row=1, column=0, padx=30, sticky="w")
             # Button gg go next
             ctk.CTkButton(master=_cache_frame[idx], command=lambda:self.master.SelectedPanel("consultation"),image=self.GoNextImage, text=None, fg_color="transparent", hover=None).grid(row=0, column=3, padx=5, pady=10, sticky="e")

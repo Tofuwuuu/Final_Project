@@ -65,7 +65,7 @@ class CalendarFrame(ctk.CTkFrame):
         self.FacultyText.grid(row=0, column=0, padx=10, pady=5, ipady=5, ipadx=5, sticky="w")
 
         # CalendarUtilitiesWrapper | Calendar Teacher Searching Utility
-        self.FacultyPicker = ctk.CTkOptionMenu(self.CaledanrUtilitiesWrapper, command=(lambda username: self.QuerySchedules(username)), values=self.db_instance.FetchFacultyNames(asc=True), fg_color=self.THEME_DARKGREEN, dropdown_fg_color=self.THEME_DARKGREEN, button_color=self.THEME_DARKGREEN, button_hover_color=self.THEME_DARKGREEN, text_color=self.DEFAULT)
+        self.FacultyPicker = ctk.CTkOptionMenu(self.CaledanrUtilitiesWrapper, command=(lambda username: self.QuerySchedules(username)), values=self.FetchFacultyNames(), fg_color=self.THEME_DARKGREEN, dropdown_fg_color=self.THEME_DARKGREEN, button_color=self.THEME_DARKGREEN, button_hover_color=self.THEME_DARKGREEN, text_color=self.DEFAULT)
         self.FacultyPicker.grid(row=0, column=1, padx=10, pady=5, ipady=5, ipadx=5, sticky="w")
 
         # CalendarUtilitiesWrapper | Calendar Scheduling Creation Dialog
@@ -76,25 +76,28 @@ class CalendarFrame(ctk.CTkFrame):
         self.calendar = Calendar(self.MainWrapper, font=ctk.CTkFont(family="Poppins", size=16),showothermonthdays=False, selectbackground="#80B699", selectmode="none")
         self.calendar.pack(expand=True, fill=tk.BOTH)
 
+    def FetchFacultyNames(self) -> list:
+        db = self.db_instance.FetchOpenFacultySchedules()
+
+        if db is not None:
+            fetched_data = list({data['username'] for data in db})
+            return fetched_data
+
     def QuerySchedules(self, username: str) -> None:
 
         self.calendar.calevent_remove(ev_ids='all')
 
         """ Reference
-        Query data in tbl_faculty schedules matching the chosen faculty member's username """
+        Query data in faculty schedules matching the chosen faculty member's username """
+        db = self.db_instance.FetchOpenFacultySchedules()
 
-        faculty_data = self.db_instance.FetchOpenFacultySchedules()
-
-        matching_data = [data for data in faculty_data if data['username'] == username]
-
-        # Data filtered by status
-        open_status = [data for data in matching_data if data['status'] == "Open"]
-        reserved_status = [data for data in matching_data if data['status'] == "Reserved"]
-
-        # Placing the calendar view to the closest open status available
-        list_date_of_closest_date = str(open_status[0]['scheduled_on']).split('-')
-        self.calendar.configure(mindate=(open_status[0]['scheduled_on']), maxdate=(open_status[-1]['scheduled_on']))
+        if db is not None:
+            fetched_data = [data for data in db if data['username'] == username]
+        else:
+            return None
+        
+        self.calendar.configure(mindate=(fetched_data[0]['scheduled_on']), maxdate=(fetched_data[-1]['scheduled_on']))
 
         # Generate calendar event on open status schedules
-        for data in open_status:
-            self.calendar.calevent_create(date=(data['scheduled_on']), text=data['schedule_name'], tags=data['schedule_name'])
+        for data in fetched_data:
+            self.calendar.calevent_create(date=data['scheduled_on'], text=data['schedule_name'], tags=data['schedule_name'])

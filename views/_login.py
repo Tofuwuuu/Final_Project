@@ -7,8 +7,6 @@ import customtkinter as ctk
 from views import init_app
 from views.teacher import teacher_app
 from views.student import student_app
-from models.db_system import DBSystem
-from models._cryptography import Security
 import base64
 from PIL import Image
 
@@ -20,44 +18,6 @@ class LogInFrame(ctk.CTkFrame):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
-
-        
-        # Validate if user email and password is the same as the query data.    
-        def ValidateUser(email: str, password: str) -> None:
-            # Instances used in this method block
-            self.auth_instance = DBSystem()
-            self.crypt = Security()
-
-
-            
-            # Fetch user data from the database
-            user_data = self.auth_instance.SearchUserByEmail(email=email)
-
-            if user_data is None:
-                # Fixed: Implement proper error message handling (value of self.err_label is not set anywhere in this class)
-                self.err_label.configure(text="Email address doesn't exist")
-            else:
-                # Decrypt and compare the user's password with the provided password
-
-                user_password = self.crypt.Decrypt(base64.b64decode(user_data["password"]).decode())
-
-
-                if user_password == password:
-                    if user_data["role"] == 'S':
-
-                        init_app.init.destroy()
-                        
-                        # Callable instance of the student class
-                        student_app._dangerouslyInit(user_data=user_data)
-                    else:
-                        init_app.init.destroy()
-                        teacher_app._dangerouslyInit(user_data=user_data)
-                        
-                else:
-                    # Fixed: Implement proper error message handling (value of self.err_label is not set anywhere in this class)
-                    self.err_label.configure(text="Username or password is incorrect.")
-
 
         #File directory pathing for images
         
@@ -115,7 +75,7 @@ class LogInFrame(ctk.CTkFrame):
         self.space3.grid(row=13, column=0, padx=0, pady=7)
 
         #Log In Button
-        self.LogIn_btn = ctk.CTkButton(self, text="Log In", fg_color="#2B9348", hover_color="#55A630", command=lambda: ValidateUser(self.Email.get(), self.Password.get()))
+        self.LogIn_btn = ctk.CTkButton(self, text="Log In", fg_color="#2B9348", hover_color="#55A630", command=self.ValidateUser)
         self.LogIn_btn.grid(row=14, column=0, padx=5, pady=5)
         
         #space 
@@ -141,3 +101,32 @@ class LogInFrame(ctk.CTkFrame):
     # Frame Methods
     def ToResetPass(self) -> None:
         self.destroy()
+    
+    # Validate if user email and password is the same as the query data.    
+    def ValidateUser(self) -> None:
+        # Instances used in this method block
+        email = self.Email.get()
+        password = self.Password.get()
+
+        
+        # Fetch user data from the database
+        user_data = self.master.db_instance.SearchUser(email)
+
+        if user_data is None:
+            # Fixed: Implement proper error message handling (value of self.err_label is not set anywhere in this class)
+            self.err_label.configure(text="Email address doesn't exist")
+        else:
+            # Decrypt and compare the user's password with the provided password
+            db_password = self.master.db_instance.GetPassHash(user_data['pass_id'])
+            decrypt_pass = self.master.security.DecryptData(db_password)
+
+            if decrypt_pass == password:
+                if user_data.get("student_id") is not None:
+
+                    init_app.init.destroy()
+                    student_app._dangerouslyInit(user_data=user_data)
+                else:
+                    init_app.init.destroy()
+                    teacher_app._dangerouslyInit(user_data=user_data)
+            else:
+                self.err_label.configure(text="Username or password is incorrect.")

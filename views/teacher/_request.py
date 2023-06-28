@@ -22,6 +22,7 @@ class RequestFrame(ctk.CTkFrame):
         self._cache_inner_frame = []
         self._cache_teacher_frame = []
         self._cache_info_frame = []
+        self._cache_button = []
 
         # Instance of the database inherit from the master application window
         self.db_instance = self.master.db_instance
@@ -111,24 +112,19 @@ class RequestFrame(ctk.CTkFrame):
 
     def UpdateStatus(self, idx:int, history_id: int, schedule_id: int, status: str) -> None:
         try:
-            schedule_data = [dat for  dat in self.db_instance.FetchUpcomingRequest(self.user_data['account_id']) if dat['schedule_id'] == schedule_id and dat['history_id'] == history_id]
+            schedule_data = [dat for  dat in self.db_instance.FetchRequestHistory(self.user_data['teacher_id']) if dat['schedule_id'] == schedule_id and dat['history_id'] == history_id]
             if status == 'Accepted':
                 if schedule_data[0]['schedule_status'] == 'Open':
                     self.db_instance.AcceptRequestOnDB(schedule_id=schedule_id, history_id=history_id)
-                    schedule_data = [dat for  dat in self.db_instance.FetchUpcomingRequest(self.user_data['account_id']) if dat['schedule_id'] == schedule_id and dat['history_id'] == history_id]
-
                     # Delete frames and its component variables
                     self._cache_frame[idx].grid_forget()
                     self._cache_info_frame[idx].grid_forget()
                     self._cache_inner_frame[idx].grid_forget()
                     self._cache_teacher_frame[idx].grid_forget()
-                    
                     self.UpdateRequest()
             elif status == 'Denied':
                 if schedule_data[0]['request_status'] != 'Rejected':
                     self.db_instance.DenyRequestOnDB(history_id=history_id)
-                    schedule_data = [dat for  dat in self.db_instance.FetchUpcomingRequest(self.user_data['account_id']) if dat['schedule_id'] == schedule_id and dat['history_id'] == history_id]
-
                     # Delete frames and its component variables
                     self._cache_frame[idx].grid_forget()
                     self._cache_info_frame[idx].grid_forget()
@@ -146,8 +142,8 @@ class RequestFrame(ctk.CTkFrame):
         """ Reference
         Update incoming consultation request based on realtime database."""
 
-        account_history = [data for data in self.db_instance.FetchUpcomingRequest(self.user_data['account_id']) if data['request_status'] == 'Pending' and data['schedule_status'] == 'Open']
-
+        account_history = [data for data in self.db_instance.FetchRequestHistory(self.user_data['teacher_id']) if data['request_status'] == 'Pending' and data['schedule_status'] == 'Open']
+        print(account_history)
         if asc == "Ascending" and account_history:
             account_history = sorted(account_history, key=lambda x: x["scheduled_on"])
         elif asc == "Descending" and account_history:
@@ -161,6 +157,7 @@ class RequestFrame(ctk.CTkFrame):
             self._cache_inner_frame.append("_cache_inner_frame_".join(str(idx)))
             self._cache_teacher_frame.append("_cache_teacher_frame_".join(str(idx)))
             self._cache_info_frame.append("_cache_info_frame_".join(str(idx)))
+            self._cache_button.append("_cache_button_".join(str(idx)))
 
             # Main frame
             self._cache_frame[idx] = ctk.CTkFrame(master=self.ConListWrapper, fg_color="transparent", border_color="gray", border_width=2, corner_radius=5)
@@ -210,5 +207,4 @@ class RequestFrame(ctk.CTkFrame):
             ctk.CTkButton(master=self._cache_frame[idx], command=lambda key=idx: self.UpdateStatus(idx=key,schedule_id=account_history[key]['schedule_id'], history_id=account_history[key]['history_id'], status='Denied'),image=self.DenyImage, text="Decline", fg_color="red", hover=None).grid(row=0, column=5, padx=5, pady=10, sticky="e")
 
             # Button gg go next
-            ctk.CTkLabel(master=self._cache_frame[idx], image=self.PendingImage, text=None, fg_color="transparent", font=ctk.CTkFont(family="Poppins", size=15)).grid(row=0, column=6, padx=10, pady=10, sticky="esn")
-    
+            self._cache_button[idx] = ctk.CTkLabel(master=self._cache_frame[idx], image=self.PendingImage, text=None, fg_color="transparent", font=ctk.CTkFont(family="Poppins", size=15)).grid(row=0, column=6, padx=10, pady=10, sticky="esn")
