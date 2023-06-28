@@ -4,7 +4,6 @@ Reference frame for main_init.py
 """
 
 import customtkinter as ctk
-import tkinter as tk
 import models.resources as res
 import datetime
 
@@ -19,11 +18,11 @@ class FacultyFrame(ctk.CTkFrame):
         # Instance of the database inherit from the master application window
         self.db_instance = self.master.db_instance
 
-        # cache data
-        self._cache_frame = []
-        self._cache_inner_frame = []
-        self._cache_teacher_frame = []
-        self._cache_info_frame = []
+        # cache frames
+        self._cache_frame = {}
+        self._cache_inner_frame = {}
+        self._cache_teacher_frame = {}
+        self._cache_info_frame = {}
 
         # load images with light and dark mode image
         """ File directory pathing for images """
@@ -85,7 +84,7 @@ class FacultyFrame(ctk.CTkFrame):
         self.SearchEntry.grid(row=0, column=0, sticky="w")
 
         #SearchUtilityWrapper | Search Button
-        self.SearchButton = ctk.CTkButton(master=self.SearchUtilityWrapper, width=90, height=33, text="Search", image=self.SearchImage, compound="right", text_color=self.THEME_YELLOW, font=ctk.CTkFont(family="Poppins", size=13), fg_color="#2B9348", hover_color="#55A630")
+        self.SearchButton = ctk.CTkButton(master=self.SearchUtilityWrapper, command=self.DisplayFaculty, width=90, height=33, text="Search", image=self.SearchImage, compound="right", text_color=self.THEME_YELLOW, font=ctk.CTkFont(family="Poppins", size=13), fg_color="#2B9348", hover_color="#55A630")
         self.SearchButton.grid(row=0, column=1, sticky="w")
 
         #SearchUtilityWrapper | Filter Button
@@ -110,7 +109,6 @@ class FacultyFrame(ctk.CTkFrame):
         self.ConInfoWrapper.grid_rowconfigure(0, weight=1)
 
     def DisplayFacultyInfo(self, schedule_id: int, schedule: any) -> None:
-
         # Fetch account information
 
         account_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['schedule_id'] == schedule_id and data['scheduled_on'] == schedule]
@@ -129,7 +127,6 @@ class FacultyFrame(ctk.CTkFrame):
         ConInfoFooter.grid(row=2, columnspan=1, padx=10, pady=5, ipady=5, sticky="nsew")
         ConInfoFooter.grid_columnconfigure(0, weight=1)
         ConInfoFooter.grid_rowconfigure(0, weight=1)
-
 
         # Icon
         ConInfoHeaderIcon = ctk.CTkLabel(master=ConInfoHeader, text=None, image=self.UserProfileImage)
@@ -158,30 +155,43 @@ class FacultyFrame(ctk.CTkFrame):
         ConInfoRequest = ctk.CTkButton(master=ConInfoFooter, text="Request a Consult", image=self.SmallCalendarImage, command=lambda:self.master.SelectedPanel("creation"))
         ConInfoRequest.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
+    def ForgetAll(self) -> None:
+        # Forget every grid
+        for _ in map(lambda x: self._cache_frame[x].grid_forget(), list(self._cache_frame.keys())):
+            pass
+        for _ in map(lambda x: self._cache_inner_frame[x].grid_forget(), list(self._cache_inner_frame.keys())):
+            pass
+        for _ in map(lambda x: self._cache_teacher_frame[x].grid_forget(), list(self._cache_teacher_frame.keys())):
+            pass
+        for _ in map(lambda x: self._cache_info_frame[x].grid_forget(), list(self._cache_info_frame.keys())):
+            pass
+
+        # Clear all dynamic var
+        self._cache_frame.clear()
+        self._cache_inner_frame.clear()
+        self._cache_teacher_frame.clear()
+        self._cache_info_frame.clear()
+
         
     def DisplayFaculty(self, asc: str = "Ascending") -> None:
-            
-            """ Reference
-            Display faculty members as bars"""
+            self.ForgetAll()
+            query = self.SearchEntry.get()
 
             fetched_data = self.db_instance.FetchOpenFacultySchedules()
-            
-
-
-
             if asc == "Ascending":
-                fetched_data = sorted(fetched_data, key=lambda x: x["username"])
+                fetched_data = sorted(fetched_data, key=lambda x: x["scheduled_on"])
             elif asc == "Descending":
-                fetched_data = sorted(fetched_data, key=lambda x: x["username"], reverse=True)
+                fetched_data = sorted(fetched_data, key=lambda x: x["scheduled_on"], reverse=True)
+
+
+            # if search is not empty, which is empty by default. Filter data to its value
+            if query != "":
+                query_data = [data for data in fetched_data if str(query).lower() in str(data['username']).lower()]
+                if query_data is not None:
+                    fetched_data = query_data
 
             # Iteration to place dynamic data in the frame
             for idx in range(len(fetched_data)):
-                
-                # Initializing cache variables
-                self._cache_frame.append("_cache_frame_".join(str(idx)))
-                self._cache_inner_frame.append("_cache_inner_frame_".join(str(idx)))
-                self._cache_teacher_frame.append("_cache_teacher_frame_".join(str(idx)))
-                self._cache_info_frame.append("_cache_info_frame_".join(str(idx)))
 
                 # Main frame
                 self._cache_frame[idx] = ctk.CTkFrame(master=self.FacultyDataWrapper, fg_color=self.THEME_GREEN)
@@ -237,4 +247,4 @@ class FacultyFrame(ctk.CTkFrame):
                 # Status if Open or Reserved by tbl_faculty
                 ctk.CTkLabel(master=self._cache_info_frame[idx], text=f"{fetched_data[idx]['status']}", text_color="white", font=ctk.CTkFont(family="Poppins", size=12)).grid(row=0, column=0, sticky="nsew")
                 # Button GG go next
-                ctk.CTkButton(master=self._cache_frame[idx], image=self.GoNextImage, text=None, fg_color=self.THEME_YELLOW).grid(row=0, column=3, padx=20, pady=10, sticky="e")
+                ctk.CTkButton(master=self._cache_frame[idx], command=lambda key=idx: self.DisplayFacultyInfo(schedule_id=fetched_data[key]['schedule_id'], schedule=fetched_data[key]['scheduled_on']), image=self.GoNextImage, text=None, fg_color=self.THEME_YELLOW).grid(row=0, column=3, padx=20, pady=10, sticky="e")

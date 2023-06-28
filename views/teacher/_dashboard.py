@@ -19,6 +19,12 @@ class DashboardFrame(ctk.CTkFrame):
         # Instance of the database inherit from the master application window
         self.db_instance = self.master.db_instance
 
+        # cache frames
+        self._cache_frame = {}
+        self._cache_inner_frame = {}
+        self._cache_teacher_frame = {}
+        self._cache_info_frame = {}
+
         # load images with light and dark mode image
         """ File directory pathing for images """
         self.CalendarImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.calendar_dark), dark_image=res.fetch_image(res.images.nav_ico.calendar_light), size=(20, 20))
@@ -88,7 +94,7 @@ class DashboardFrame(ctk.CTkFrame):
         self.SearchEntry.grid(row=0, column=0, sticky="w")
 
         #SearchUtilityWrapper | Search Button
-        self.SearchButton = ctk.CTkButton(master=self.SearchUtilityWrapper, width=90, height=33, text="Search", image=self.SearchImage, compound="right", text_color=self.THEME_YELLOW, font=ctk.CTkFont(family="Poppins", size=13), fg_color="#2B9348", hover_color="#55A630")
+        self.SearchButton = ctk.CTkButton(master=self.SearchUtilityWrapper, command=self.UpdateUpcoming, width=90, height=33, text="Search", image=self.SearchImage, compound="right", text_color=self.THEME_YELLOW, font=ctk.CTkFont(family="Poppins", size=13), fg_color="#2B9348", hover_color="#55A630")
         self.SearchButton.grid(row=0, column=1, sticky="w")
 
         #SearchUtilityWrapper | Filter Button
@@ -100,63 +106,79 @@ class DashboardFrame(ctk.CTkFrame):
         self.Sort = ctk.CTkComboBox(master=self.SearchUtilityWrapper,command=lambda sort: self.UpdateUpcoming(sort), values=["Ascending", "Descending"], variable=self.SortVariable, height=30, text_color=("#242424", 'white'), font=ctk.CTkFont(family="Poppins", size=11), dropdown_fg_color=self.THEME_YELLOW, fg_color=self.DEFAULT, border_color=self.THEME_GREEN, border_width=2, corner_radius=5, button_hover_color="#55A630", button_color=self.THEME_GREEN)
         self.Sort.grid(row=1, column=0, sticky="w")
         
+    def ForgetAll(self) -> None:
+        # Forget every grid
+        for _ in map(lambda x: self._cache_frame[x].grid_forget(), list(self._cache_frame.keys())):
+            pass
+        for _ in map(lambda x: self._cache_inner_frame[x].grid_forget(), list(self._cache_inner_frame.keys())):
+            pass
+        for _ in map(lambda x: self._cache_teacher_frame[x].grid_forget(), list(self._cache_teacher_frame.keys())):
+            pass
+        for _ in map(lambda x: self._cache_info_frame[x].grid_forget(), list(self._cache_info_frame.keys())):
+            pass
+
+        # Clear all dynamic var
+        self._cache_frame.clear()
+        self._cache_inner_frame.clear()
+        self._cache_teacher_frame.clear()
+        self._cache_info_frame.clear()
+
 
     def UpdateUpcoming(self, asc: str = "Ascending") -> None:
+        self.ForgetAll()
+
+        # get the search entry value
+        query = self.SearchEntry.get()
         
         """ Reference
         Update upcoming consultation based on realtime database."""
 
         account_history = self.db_instance.FetchStudentRequest(self.user_data['teacher_id'])
 
-        _cache_frame = []
-        _cache_inner_frame = []
-        _cache_teacher_frame = []
-        _cache_info_frame = []
-
         if asc == "Ascending":
             account_history = sorted(account_history, key=lambda x: x["scheduled_on"])
         elif asc == "Descending":
             account_history = sorted(account_history, key=lambda x: x["scheduled_on"], reverse=True)
         
+        # if search is not empty, which is empty by default. Filter data to its value
+        if query != "":
+            query_data = [data for data in account_history if str(query).lower() in str(data['student']).lower()]
+            if query_data is not None:
+                account_history = query_data
+
         # Iteration to place dynamic data in the frame
         for idx in range(len(account_history)):
-            
-            # Initializing cache variables
-            _cache_frame.append("_cache_frame_".join(str(idx)))
-            _cache_inner_frame.append("_cache_inner_frame_".join(str(idx)))
-            _cache_teacher_frame.append("_cache_teacher_frame_".join(str(idx)))
-            _cache_info_frame.append("_cache_info_frame_".join(str(idx)))
 
             # Main frame
-            _cache_frame[idx] = ctk.CTkFrame(master=self.ConListWrapper, fg_color="transparent", border_color="gray", border_width=2, corner_radius=5)
-            _cache_frame[idx].grid(row=idx, column=0, pady=10, padx=5, sticky="nsew")
-            _cache_frame[idx].grid_columnconfigure(3, weight=1)
-            _cache_frame[idx].grid_rowconfigure(3, weight=1)
+            self._cache_frame[idx] = ctk.CTkFrame(master=self.ConListWrapper, fg_color="transparent", border_color="gray", border_width=2, corner_radius=5)
+            self._cache_frame[idx].grid(row=idx, column=0, pady=10, padx=5, sticky="nsew")
+            self._cache_frame[idx].grid_columnconfigure(3, weight=1)
+            self._cache_frame[idx].grid_rowconfigure(3, weight=1)
 
             # Inner frame for date
-            _cache_inner_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color=self.THEME_BLUE, corner_radius=5)
-            _cache_inner_frame[idx].grid(row=0, column=0, padx=10, pady=10, sticky="nsw")
-            _cache_inner_frame[idx].grid_columnconfigure(0, weight=1)
-            _cache_inner_frame[idx].grid_rowconfigure(0, weight=1)
+            self._cache_inner_frame[idx] = ctk.CTkFrame(master=self._cache_frame[idx], fg_color=self.THEME_BLUE, corner_radius=5)
+            self._cache_inner_frame[idx].grid(row=0, column=0, padx=10, pady=10, sticky="nsw")
+            self._cache_inner_frame[idx].grid_columnconfigure(0, weight=1)
+            self._cache_inner_frame[idx].grid_rowconfigure(0, weight=1)
 
             # Inner frame for Schedule Info
-            _cache_teacher_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color="transparent")
-            _cache_teacher_frame[idx].grid(row=0, column=1, padx=10, pady=10, sticky="nsw")
-            _cache_teacher_frame[idx].grid_columnconfigure(0, weight=1)
-            _cache_teacher_frame[idx].grid_rowconfigure(0, weight=1)
+            self._cache_teacher_frame[idx] = ctk.CTkFrame(master=self._cache_frame[idx], fg_color="transparent")
+            self._cache_teacher_frame[idx].grid(row=0, column=1, padx=10, pady=10, sticky="nsw")
+            self._cache_teacher_frame[idx].grid_columnconfigure(0, weight=1)
+            self._cache_teacher_frame[idx].grid_rowconfigure(0, weight=1)
 
             # Inner frame for Informations
-            _cache_info_frame[idx] = ctk.CTkFrame(master=_cache_frame[idx], fg_color="transparent")
-            _cache_info_frame[idx].grid(row=0, column=2, padx=10, pady=10, sticky="nsw")
-            _cache_info_frame[idx].grid_columnconfigure(0, weight=1)
-            _cache_info_frame[idx].grid_rowconfigure(0, weight=1)
+            self._cache_info_frame[idx] = ctk.CTkFrame(master=self._cache_frame[idx], fg_color="transparent")
+            self._cache_info_frame[idx].grid(row=0, column=2, padx=10, pady=10, sticky="nsw")
+            self._cache_info_frame[idx].grid_columnconfigure(0, weight=1)
+            self._cache_info_frame[idx].grid_rowconfigure(0, weight=1)
 
             # Inner day label
-            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{account_history[idx]['scheduled_on'].strftime('%d')}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, padx=30, sticky="nsew")
+            ctk.CTkLabel(master=self._cache_inner_frame[idx], text=f"{account_history[idx]['scheduled_on'].strftime('%d')}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, padx=30, sticky="nsew")
             # Inner Month
-            ctk.CTkLabel(master=_cache_inner_frame[idx], text=f"{account_history[idx]['scheduled_on'].strftime('%B')[0:3]}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=18, weight='bold')).grid(row=1, column=0, sticky="nsew")
+            ctk.CTkLabel(master=self._cache_inner_frame[idx], text=f"{account_history[idx]['scheduled_on'].strftime('%B')[0:3]}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=18, weight='bold')).grid(row=1, column=0, sticky="nsew")
             #Inner Teacher Text
-            ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{account_history[idx]['student']}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
+            ctk.CTkLabel(master=self._cache_teacher_frame[idx], text=f"{account_history[idx]['student']}", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
 
 
             # timedelta lost my sanity. It is not even a timezone conversion wtf.
@@ -165,11 +187,11 @@ class DashboardFrame(ctk.CTkFrame):
             formatted_time = f"{session_start} - {session_end}"
 
             # Inner TimeSpan in TeacherWrapper
-            ctk.CTkLabel(master=_cache_teacher_frame[idx], text=f"{formatted_time}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=12)).grid(row=1, column=0, sticky="w")
+            ctk.CTkLabel(master=self._cache_teacher_frame[idx], text=f"{formatted_time}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=12)).grid(row=1, column=0, sticky="w")
             # Inner TimeSpan in TeacherWrapper
-            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{account_history[idx]['task_name']}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=13, weight='bold')).grid(row=0, column=0, sticky="nsew")
+            ctk.CTkLabel(master=self._cache_info_frame[idx], text=f"{account_history[idx]['task_name']}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=13, weight='bold')).grid(row=0, column=0, sticky="nsew")
             # Inner TimeSpan in TeacherWrapper
-            ctk.CTkLabel(master=_cache_info_frame[idx], text=f"{account_history[idx]['task_description']}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=12)).grid(row=1, column=0, padx=30, sticky="w")
+            ctk.CTkLabel(master=self._cache_info_frame[idx], text=f"{account_history[idx]['task_description']}", text_color=("black", "white"), font=ctk.CTkFont(family="Poppins", size=12)).grid(row=1, column=0, padx=30, sticky="w")
 
             # Button gg go next
-            ctk.CTkButton(master=_cache_frame[idx], command=lambda:self.master.SelectedPanel("history"),image=self.GoNextImage, text=None, fg_color="transparent", hover=None).grid(row=0, column=3, padx=5, pady=10, sticky="e")
+            ctk.CTkButton(master=self._cache_frame[idx], command=lambda:self.master.SelectedPanel("history"),image=self.GoNextImage, text=None, fg_color="transparent", hover=None).grid(row=0, column=3, padx=5, pady=10, sticky="e")

@@ -97,7 +97,7 @@ class RequestFrame(ctk.CTkFrame):
         self.SearchEntry.grid(row=0, column=0, sticky="w")
 
         #SearchUtilityWrapper | Search Button
-        self.SearchButton = ctk.CTkButton(master=self.SearchUtilityWrapper, width=90, height=33, text="Search", image=self.SearchImage, compound="right", text_color=self.THEME_YELLOW, font=ctk.CTkFont(family="Poppins", size=13), fg_color="#2B9348", hover_color="#55A630")
+        self.SearchButton = ctk.CTkButton(master=self.SearchUtilityWrapper, command=self.UpdateRequest, width=90, height=33, text="Search", image=self.SearchImage, compound="right", text_color=self.THEME_YELLOW, font=ctk.CTkFont(family="Poppins", size=13), fg_color="#2B9348", hover_color="#55A630")
         self.SearchButton.grid(row=0, column=1, sticky="w")
 
         #SearchUtilityWrapper | Filter Button
@@ -147,15 +147,24 @@ class RequestFrame(ctk.CTkFrame):
 
 
     def UpdateRequest(self, asc: str = "Ascending") -> None:
-        
         """ Reference
         Update incoming consultation request based on realtime database."""
+
+        self.ForgetAll()
+        # get the search entry value
+        query = self.SearchEntry.get()
 
         account_history = [data for data in self.db_instance.FetchRequestHistory(self.user_data['teacher_id']) if data['request_status'] == 'Pending' and data['schedule_status'] == 'Open']
         if asc == "Ascending" and account_history:
             account_history = sorted(account_history, key=lambda x: x["scheduled_on"])
         elif asc == "Descending" and account_history:
             account_history = sorted(account_history, key=lambda x: x["scheduled_on"], reverse=True)
+
+        # if search is not empty, which is empty by default. Filter data to its value
+        if query != "":
+            query_data = [data for data in account_history if str(query).lower() in str(data['student']).lower()]
+            if query_data is not None:
+                account_history = query_data
 
         # Iteration to place dynamic data in the frame
         for idx in range(len(account_history)):

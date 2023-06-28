@@ -130,7 +130,7 @@ class DashboardFrame(ctk.CTkFrame):
         self.ConWrapper = ctk.CTkFrame(master=self, fg_color="transparent")
         self.ConWrapper.grid(row=1, columnspan=1, padx=20, pady=5, ipady=10, sticky="nsew")
         self.ConWrapper.grid_columnconfigure(0, weight=1)
-        self.ConWrapper.grid_rowconfigure(3, weight=1)
+        self.ConWrapper.grid_rowconfigure(2, weight=1)
 
         # ConWrapper | Upcoming Consultations Label
         self.UpcomingConsultationsLabel = ctk.CTkLabel(self.ConWrapper, text="Upcoming Consultations", text_color=("#2B9348", "#Fdf0d5"), font=ctk.CTkFont(family="Poppins", size=20, weight='bold'))
