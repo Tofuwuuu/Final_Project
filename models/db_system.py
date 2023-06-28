@@ -169,12 +169,11 @@ class DBSystem(DBConnect):
             
             try:
                 # SQL query
-                fetch_script = f"SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, teacher.email AS teacher_email, con.status, sched.schedule_id, sched.schedule_name, sched.scheduled_on, sched.open_at, sched.close_at FROM consultation_histories AS con LEFT JOIN account_students AS student ON student.student_id = con.student_id LEFT JOIN faculty_schedules AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN account_teachers AS teacher ON teacher.teacher_id = sched.teacher_id WHERE student.student_id = {account_id} ORDER BY sched.scheduled_on DESC"
-                cursor.execute(fetch_script)
+                fetch_script = "SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, teacher.email AS teacher_email, con.status, sched.schedule_id, sched.schedule_name, sched.scheduled_on, sched.open_at, sched.close_at FROM consultation_histories AS con LEFT JOIN account_students AS student ON student.student_id = con.student_id LEFT JOIN faculty_schedules AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN account_teachers AS teacher ON teacher.teacher_id = sched.teacher_id WHERE student.student_id = %s ORDER BY sched.scheduled_on DESC"
+                cursor.execute(fetch_script, (account_id,))
                 data = cursor.fetchall()
                 #Get the column names
                 legend = [column[0] for column in cursor.description]
-
                 # Making a list of dictionaries to represent data
                 return [dict(zip(legend, idx)) for idx in data]
             except:
