@@ -6,7 +6,6 @@ import os
 from PIL import Image
 
 #base paths for different types of resources
-_font_path = os.path.abspath("./resources/fonts") + "\\"
 _image_path = os.path.abspath("./resources/images") + "\\"
 _image_nav_path = _image_path + "nav-icons\\"
 
