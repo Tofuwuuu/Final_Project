@@ -83,7 +83,7 @@ class RequestFrame(ctk.CTkFrame):
 
         #SearchUtilityWrapper | Sort ComboBox
         self.SortVariable = ctk.StringVar(value="Sort")
-        self.Sort = ctk.CTkComboBox(master=self.SearchUtilityWrapper,command=lambda sort: self.UpdateRequest(sort), values=["Ascending", "Descending"], variable=self.SortVariable, height=30, text_color=("#242424", 'white'), font=ctk.CTkFont(family=res.fonts.POPPINS, size=11), dropdown_fg_color=res.constants.THEME_YELLOW, fg_color=res.constants.THEME_DEFAULT, border_color=res.constants.THEME_GREEN, border_width=2, corner_radius=5, button_hover_color="#55A630", button_color=res.constants.THEME_GREEN)
+        self.Sort = ctk.CTkComboBox(master=self.SearchUtilityWrapper,command=lambda sort: self.UpdateRequest(sort), values=["Ascending", "Descending", "Alphabetical"], variable=self.SortVariable, height=30, text_color=("#242424", 'white'), font=ctk.CTkFont(family=res.fonts.POPPINS, size=11), dropdown_fg_color=res.constants.THEME_YELLOW, fg_color=res.constants.THEME_DEFAULT, border_color=res.constants.THEME_GREEN, border_width=2, corner_radius=5, button_hover_color="#55A630", button_color=res.constants.THEME_GREEN)
         self.Sort.grid(row=1, column=0, sticky="w")
 
     def ForgetAll(self):
@@ -135,6 +135,8 @@ class RequestFrame(ctk.CTkFrame):
             account_history = sorted(account_history, key=lambda x: x["scheduled_on"])
         elif asc == "Descending" and account_history:
             account_history = sorted(account_history, key=lambda x: x["scheduled_on"], reverse=True)
+        elif asc == "Alphabetical":
+            account_history = sorted(account_history, key=lambda x: x["teacher"])
 
         # if search is not empty, which is empty by default. Filter data to its value
         if query != "":
