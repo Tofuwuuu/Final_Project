@@ -6,7 +6,6 @@ Reference frame for main_init.py
 import customtkinter as ctk 
 import models.resources as res
 import models.datetimeformatter as dtf
-import models.timetest as ttest
 class HistoryFrame(ctk.CTkFrame):
 
     def __init__(self, *args, **kwargs):
@@ -95,7 +94,6 @@ class HistoryFrame(ctk.CTkFrame):
         self._cache_teacher_frame.clear()
         self._cache_info_frame.clear()
 
-    @ttest.TestDisplayTime
     def UpdateHistory(self, asc: str = "Ascending") -> None:
         
         self.ForgetAll()

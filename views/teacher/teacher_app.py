@@ -113,6 +113,7 @@ class TeacherApp(ctk.CTk):
         # Settings | Settings Panel - Implementation and Configurations on ./_settings.py
         self.CreationPanel = CreationFrame(master=self, corner_radius=0, fg_color="transparent")
 
+        self.UpdateData()
         # Default Window Frame on load
         self.SelectedPanel("dashboard")
 
@@ -163,7 +164,7 @@ class TeacherApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.DashboardPanel.grid(row=0, column=1, sticky="nsew")
-                self.DashboardPanel.UpdateUpcoming()
+
                 # Show as "selected button"
                 self.ToDashboard.configure(fg_color=res.constants.THEME_GRAY)
                 
@@ -178,7 +179,7 @@ class TeacherApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.RequestPanel.grid(row=0, column=1, sticky="nsew")
-                self.RequestPanel.UpdateRequest()
+
                 # Show as "selected button"\
                 self.ToRequest.configure(fg_color=res.constants.THEME_GRAY)
                 self.selected_panel = name
@@ -191,7 +192,7 @@ class TeacherApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.HistoryPanel.grid(row=0, column=1, sticky="nsew")
-                self.HistoryPanel.UpdateHistory()
+
                 # Show as "selected button"\
                 self.ToHistory.configure(fg_color=res.constants.THEME_GRAY)
                 self.selected_panel = name
@@ -211,6 +212,11 @@ class TeacherApp(ctk.CTk):
                 pass
         else:
             self.CreationPanel.grid_forget()
+
+    def UpdateData(self):
+        self.DashboardPanel.UpdateUpcoming()
+        self.HistoryPanel.UpdateHistory()
+        self.RequestPanel.UpdateRequest()
 
 # This is used to initialize the student application window in the login method -> ValidateUser
 def _dangerouslyInit(user_data: list) -> None:

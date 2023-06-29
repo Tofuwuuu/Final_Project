@@ -3,6 +3,7 @@ This is a frame file. You can't run this file as a "__main__".
 """
 
 import customtkinter as ctk
+import models.resources as res
 from ._dashboard import DashboardFrame
 from ._faculty import FacultyFrame
 from ._calendar import CalendarFrame
@@ -10,7 +11,8 @@ from ._history import HistoryFrame
 from ._create import CreationFrame
 from models.db_system import DBSystem
 from .. import init_app
-import models.resources as res
+
+
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "Dark", "Light"
 ctk.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
@@ -115,6 +117,7 @@ class StudentApp(ctk.CTk):
         # Creation | Creation Panel - Implementation and Configurations on ./_Creation.py
         self.CreationPanel = CreationFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
 
+        self.UpdateData()
         # Default Window Frame on load
         self.SelectedPanel("dashboard")
 
@@ -167,10 +170,8 @@ class StudentApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.DashboardPanel.grid(row=0, column=1, sticky="nsew")
-                self.DashboardPanel.UpdateUpcoming()
                 # Show as "selected button"
                 self.ToDashboard.configure(fg_color=res.constants.THEME_GRAY)
-                
                 self.selected_panel = name
             else:
                 pass
@@ -181,7 +182,6 @@ class StudentApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.FacultyPanel.grid(row=0, column=1, sticky="nsew")
-                self.FacultyPanel.DisplayFaculty()
                 # Show as "selected button"
                 self.ToFaculty.configure(fg_color=res.constants.THEME_GRAY)
                 self.selected_panel = name
@@ -207,7 +207,6 @@ class StudentApp(ctk.CTk):
             if self.selected_panel != name:
                 # Display
                 self.HistoryPanel.grid(row=0, column=1, sticky="nsew")
-                self.HistoryPanel.UpdateHistory()
                 # Show as "selected button"\
                 self.ToHistory.configure(fg_color=res.constants.THEME_GRAY)
                 self.selected_panel = name
@@ -229,6 +228,11 @@ class StudentApp(ctk.CTk):
         else:
             self.CreationPanel.grid_forget()
 
+
+    def UpdateData(self):
+        self.DashboardPanel.UpdateUpcoming()
+        self.FacultyPanel.DisplayFaculty()
+        self.HistoryPanel.UpdateHistory()
 
 # This is used to initialize the student application window in the login method -> ValidateUser
 def _dangerouslyInit(user_data: list) -> None:

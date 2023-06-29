@@ -6,7 +6,6 @@ Reference frame for main_init.py
 import customtkinter as ctk
 import models.resources as res
 import models.datetimeformatter as dtf
-import models.timetest as ttest
 
 class DashboardFrame(ctk.CTkFrame):
 
@@ -161,7 +160,6 @@ class DashboardFrame(ctk.CTkFrame):
         self._cache_teacher_frame.clear()
         self._cache_info_frame.clear()
 
-    @ttest.TestDisplayTime
     def UpdateUpcoming(self, asc: str = "Ascending") -> None:
         self.ForgetAll()
 
@@ -232,4 +230,4 @@ class DashboardFrame(ctk.CTkFrame):
             # Inner TimeSpan in TeacherWrapper
             ctk.CTkLabel(master=self._cache_info_frame[idx], text=f"    {account_history[idx]['status']}", text_color=("black", "white"), font=ctk.CTkFont(family=res.fonts.POPPINS, size=12)).grid(row=1, column=0, padx=30, sticky="w")
             # Button gg go next
-            ctk.CTkButton(master=self._cache_frame[idx], command=lambda:self.master.SelectedPanel("consultation"),image=self.master.GoNextImage, text=None, fg_color="transparent", hover=None).grid(row=0, column=3, padx=5, pady=10, sticky="e")
+            ctk.CTkButton(master=self._cache_frame[idx], command=lambda:self.master.SelectedPanel("history"),image=self.master.GoNextImage, text=None, fg_color="transparent", hover=None).grid(row=0, column=3, padx=5, pady=10, sticky="e")
