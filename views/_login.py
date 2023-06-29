@@ -7,7 +7,6 @@ import customtkinter as ctk
 from views import init_app
 from views.teacher import teacher_app
 from views.student import student_app
-import base64
 from PIL import Image
 
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "Dark", "Light"

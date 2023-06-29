@@ -15,15 +15,24 @@ __image_cache = {}
 
 class constants:
 
-    
+    THEME_GREEN = ("#95D5B2", "#081c15")
+    THEME_YELLOW = ("#Fdf0d5", "#081c15")
+    THEME_BLUE = ("#DFE9F1", "gray")
+    THEME_DARKGREEN = ("#80B699", "#1F664D")
+    THEME_TEXT = ("#2B9348", "#Fdf0d5")
+    THEME_DEFAULT = ('white', '#242424')
+    THEME_GRAY = ("gray75", "gray25")
+
     WIN_SMALL_WIDTH = 900
     WIN_SMALL_HEIGHT = 600
     WIN_WIDTH = 1200
     WIN_HEIGHT = 800
+
+class regex:
     REGEX_EMAIL = r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
 
 class fonts:
-    pass
+    POPPINS = "Poppins"
 
 class images:
 

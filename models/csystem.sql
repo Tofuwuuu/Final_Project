@@ -162,9 +162,9 @@ VALUES
     (2000019, 'Coursework Help', 'Need help understanding and completing coursework', 100001, 1000018, 'Pending'),
     (2000020, 'Essay Writing Assistance', 'Seeking guidance in writing an effective essay', 100003, 1000029, 'Accepted'),
     (2000021, 'Thesis Proposal Review', 'Looking for feedback on my thesis proposal', 100001, 1000031, 'Accepted'),
-    (2000022, 'Coding Project Collaboration', 'Seeking collaborators for a coding project', 100001, 1000099, 'Accepted'),
+    (2000022, 'Coding Project Collaboration', 'Seeking collaborators for a coding project', 100001, 1000039, 'Accepted'),
     (2000023, 'Technical Interview Practice', 'Need practice and feedback for technical interviews', 100000, 1000006, 'Pending'),
-    (2000024, 'Data Analysis Help', 'Need assistance with data analysis for my research', 100000, 10000041, 'Pending'),
+    (2000024, 'Data Analysis Help', 'Need assistance with data analysis for my research', 100000, 1000041, 'Pending'),
     (2000025, 'Job Search Strategies', 'Looking for effective job search strategies and tips', 100000, 1000047, 'Ended'),
     (2000026, 'Presentation Feedback', 'Seeking feedback on my presentation delivery', 100001, 1000048, 'Pending'),
     (2000027, 'Language Learning Advice', 'Looking for tips and resources to improve language skills', 100000, 1000039, 'Accepted'),
@@ -190,4 +190,4 @@ VALUES
     (2000047, 'Course Recommendation', 'Need recommendations for elective courses', 100001, 1000047, 'Accepted'),
     (2000048, 'Research Assistance', 'Looking for assistance in conducting research', 100001, 1000045, 'Accepted'),
     (2000049, 'Exam Proctoring', 'Need a proctor for an upcoming exam', 100001, 1000041, 'Accepted');
-	
+    
