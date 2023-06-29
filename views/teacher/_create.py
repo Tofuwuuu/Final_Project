@@ -73,7 +73,7 @@ class CreationFrame(ctk.CTkFrame):
         self.CreateButton.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
 
     def Getter(self) -> dict:
-        legend = ['teacher_id', 'schedule_name', 'schedule_on', 'open_at', 'close_at', 'status']
+        legend = ['teacher_id', 'schedule_name', 'scheduled_on', 'open_at', 'close_at', 'status']
         _start = dtf.TimeBuilder(hours=self.ScheduleStart.hours(), minutes=self.ScheduleStart.minutes())
         _end = dtf.TimeBuilder(hours=self.ScheduleEnd.hours(), minutes=self.ScheduleEnd.minutes())
 

@@ -259,7 +259,7 @@ class DBSystem(DBConnect):
 
             with self.db.cursor() as cursor:              
                 # SQL query
-                query_script = f"INSERT INTO faculty_schedules (teacher_id, schedule_name, schedule_on, open_at, close_at, status) VALUES ('{request_data['teacher_id']}', '{request_data['schedule_name']}', '{request_data['schedule_on']}', '{request_data['open_at']}', '{request_data['close_at']}', '{request_data['status']}')"
+                query_script = f"INSERT INTO faculty_schedules (teacher_id, schedule_name, scheduled_on, open_at, close_at, status) VALUES ('{request_data['teacher_id']}', '{request_data['schedule_name']}', '{request_data['scheduled_on']}', '{request_data['open_at']}', '{request_data['close_at']}', '{request_data['status']}')"
                 cursor.execute(query_script)
                 self.db.commit()
                 return True
