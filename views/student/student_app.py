@@ -11,7 +11,6 @@ from ._create import CreationFrame
 from models.db_system import DBSystem
 from .. import init_app
 import models.resources as res
-
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "Dark", "Light"
 ctk.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
@@ -54,7 +53,7 @@ class StudentApp(ctk.CTk):
 
         # Window Configurations
         self.geometry(f"{res.constants.WIN_WIDTH}x{res.constants.WIN_HEIGHT}")
-        self.title(f"CvSU Consult - Welcome, back teacher.")
+        self.title(f"CvSU Consult - Welcome, back {self.user_data['username']}.")
         self.iconbitmap(res.images.window_icon)
 
         # set grid layout 1x2

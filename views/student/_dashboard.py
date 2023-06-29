@@ -183,7 +183,7 @@ class DashboardFrame(ctk.CTkFrame):
             query_data = [data for data in account_history if str(query).lower() in str(data['teacher']).lower()]
             if query_data is not None:
                 account_history = query_data
-
+                
         # Iteration to place dynamic data in the frame
         for idx in range(len(account_history)):
 

@@ -104,7 +104,7 @@ class DashboardFrame(ctk.CTkFrame):
         self._cache_teacher_frame.clear()
         self._cache_info_frame.clear()
 
-
+    @ttest.TestDisplayTime
     def UpdateUpcoming(self, asc: str = "Ascending") -> None:
         self.ForgetAll()
 
