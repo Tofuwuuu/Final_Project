@@ -6,6 +6,7 @@ Reference frame for main_init.py
 import customtkinter as ctk
 import models.resources as res
 import datetime
+import models.timetest as ttest
 
 class FacultyFrame(ctk.CTkFrame):
 
@@ -150,17 +151,15 @@ class FacultyFrame(ctk.CTkFrame):
         self._cache_teacher_frame.clear()
         self._cache_info_frame.clear()
 
-        
+    @ttest.TestDisplayTime
     def DisplayFaculty(self, asc: str = "Ascending") -> None:
             self.ForgetAll()
             query = self.SearchEntry.get()
-
             fetched_data = self.db_instance.FetchOpenFacultySchedules()
             if asc == "Ascending":
                 fetched_data = sorted(fetched_data, key=lambda x: x["scheduled_on"])
             elif asc == "Descending":
                 fetched_data = sorted(fetched_data, key=lambda x: x["scheduled_on"], reverse=True)
-
 
             # if search is not empty, which is empty by default. Filter data to its value
             if query != "":

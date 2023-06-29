@@ -6,7 +6,7 @@ Reference frame for main_init.py
 import customtkinter as ctk
 import models.resources as res
 import models.datetimeformatter as dtf
-
+import models.timetest as ttest
 class RequestFrame(ctk.CTkFrame):
 
 
@@ -123,7 +123,7 @@ class RequestFrame(ctk.CTkFrame):
         finally:
             self.UpdateRequest()
 
-
+    @ttest.TestDisplayTime
     def UpdateRequest(self, asc: str = "Ascending") -> None:
         """ Reference
         Update incoming consultation request based on realtime database."""
