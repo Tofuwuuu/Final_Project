@@ -96,13 +96,14 @@ class ConsultationFrame(ctk.CTkFrame):
         self.ConsultationDataWrapper.grid(row=1, columnspan=1, padx=5, pady=5, sticky="nsew")
     
     def UpdateDisplay(self, asc: str = "Descending") -> None:
-        # Sort account history once
+        # Sort account history once, reducing computation needed in the loop below
         account_history = sorted(self.db_instance.FetchStudentHistory(self.user_data['student_id']), 
                                 key=lambda x: x['scheduled_on'], 
                                 reverse=(asc == "Descending"))
 
-        # Using cashed data and f-strings
+        # Using cashed data (record) and f-strings for variable name generation and string formatting
         for idx, record in enumerate(account_history):
+            #creating the frames for each record
             frame = ctk.CTkFrame(master=self.ConsultationDataWrapper, fg_color="transparent", 
                                 border_color="gray", border_width=2, corner_radius=5)
             frame.grid(row=idx, column=0, pady=10, padx=5, sticky="nsew")
@@ -138,7 +139,7 @@ class ConsultationFrame(ctk.CTkFrame):
                         text=f"{record['teacher']}", 
                         text_color=("#2B9348", "#Fdf0d5"), 
                         font=ctk.CTkFont(family="Poppins", size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
-
+            #Converting time and creating a formatted string
             session_start = dtf.ConvertTime(record['open_at'])
             session_end = dtf.ConvertTime(record['close_at'])
             formatted_time = f"{session_start} - {session_end}"
@@ -157,7 +158,7 @@ class ConsultationFrame(ctk.CTkFrame):
                         text=f"    {record['status']}", 
                         text_color=("black", "white"), 
                         font=ctk.CTkFont(family="Poppins", size=12)).grid(row=1, column=0, padx=30, sticky="w")
-
+            # adding a clickable button for each record
             ctk.CTkButton(master=frame, 
                         command=lambda: self.master.SelectedPanel("consultation"), 
                         image=self.GoNextImage, 
