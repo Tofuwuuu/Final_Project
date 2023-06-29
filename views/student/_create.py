@@ -104,13 +104,13 @@ class CreationFrame(ctk.CTkFrame):
     
     def CheckIfExistingRequest(self) -> bool:
         form_data = self.Getter()
-        user_generated_consultation_data = self.db_instance.FetchAccountConsultationHistory(self.user_data['account_id'])
+        user_generated_consultation_data = self.db_instance.FetchStudentHistory(self.user_data['student_id'])
         form_schedule_ids = [data['schedule_id'] for data in user_generated_consultation_data]
         teacher_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['username'] == form_data['teacher'] and str(data['scheduled_on']) == form_data['date'] and dtf.ConvertTime(data['open_at']) == form_data['time']]
         if teacher_data and teacher_data[0]['schedule_id'] in form_schedule_ids:
-            return True
-        else:
             return False
+        else:
+            return True
         
     
     def FormHandler(self) -> None:
@@ -143,7 +143,7 @@ class CreationFrame(ctk.CTkFrame):
         teacher_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['username'] == form_data['teacher'] and str(data['scheduled_on']) == form_data['date'] and dtf.ConvertTime(data['open_at']) == form_data['time']]
 
         gathered_data = {
-            "student": account_data["account_id"],
+            "student": account_data["student_id"],
             "schedule_id": teacher_data[0]["schedule_id"],
             "task_name": self.RequestTitle.get(),
             "task_desc": self.RequestBody.get(),

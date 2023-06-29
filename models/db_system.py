@@ -160,7 +160,7 @@ class DBSystem(DBConnect):
             except:
                 return None
             
-    def FetchStudentHistory(self, account_id: int) -> list | None:
+    def FetchStudentHistory(self, student_id: int) -> list | None:
         """ ## Reference
         #### Fetching all of the account related consultation schedules
         #### returns [{history_id, task_name, task_description, student.student, teacher.teacher, status, schedule_id, scheduled_on, open_at, close_at, status}]"""
@@ -170,7 +170,7 @@ class DBSystem(DBConnect):
             try:
                 # SQL query
                 fetch_script = "SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, teacher.email AS teacher_email, con.status, sched.schedule_id, sched.schedule_name, sched.scheduled_on, sched.open_at, sched.close_at FROM consultation_histories AS con LEFT JOIN account_students AS student ON student.student_id = con.student_id LEFT JOIN faculty_schedules AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN account_teachers AS teacher ON teacher.teacher_id = sched.teacher_id WHERE student.student_id = %s ORDER BY sched.scheduled_on DESC"
-                cursor.execute(fetch_script, (account_id,))
+                cursor.execute(fetch_script, (student_id,))
                 data = cursor.fetchall()
                 #Get the column names
                 legend = [column[0] for column in cursor.description]
@@ -245,7 +245,7 @@ class DBSystem(DBConnect):
 
             with self.db.cursor() as cursor:              
                 # SQL query
-                query_script = f"INSERT INTO tbl_consultations (task_name, task_description, created_by, schedule_id, status) VALUES ('{request_data['task_name']}', '{request_data['task_desc']}', '{request_data['student']}', '{request_data['schedule_id']}', '{request_data['status']}')"
+                query_script = f"INSERT INTO consultation_histories(task_name, task_description, student_id, schedule_id, status) VALUES ('{request_data['task_name']}', '{request_data['task_desc']}', '{request_data['student']}', '{request_data['schedule_id']}', '{request_data['status']}')"
                 cursor.execute(query_script)
                 self.db.commit()
                 return True
