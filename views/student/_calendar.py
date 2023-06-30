@@ -7,7 +7,7 @@ import customtkinter as ctk
 import tkinter as tk
 import models.resources as res
 from tkcalendar import Calendar
-from views.student import _create
+from views.student import _request
 
 class CalendarFrame(ctk.CTkFrame):
 
@@ -56,7 +56,7 @@ class CalendarFrame(ctk.CTkFrame):
         self.FacultyPicker.grid(row=0, column=1, padx=10, pady=15, ipady=5, ipadx=5, sticky="w")
 
         # CalendarUtilitiesWrapper | Calendar Scheduling Creation Dialog
-        self.ScheduleButton = ctk.CTkButton(self.CaledanrUtilitiesWrapper, command=self.CreateSchedule, image=self.master.SmallCalendarImage, text="Schedule a Consultation", font=ctk.CTkFont(family=res.fonts.POPPINS, size=14), fg_color=res.constants.THEME_YELLOW, text_color=res.constants.THEME_TEXT, hover=None)
+        self.ScheduleButton = ctk.CTkButton(self.CaledanrUtilitiesWrapper, command=self.master.ShowRequestWindow, image=self.master.SmallCalendarImage, text="Schedule a Consultation", font=ctk.CTkFont(family=res.fonts.POPPINS, size=14), fg_color=res.constants.THEME_YELLOW, text_color=res.constants.THEME_TEXT, hover=None)
         self.ScheduleButton.grid(row=0, column=2, padx=10, pady=5, ipady=5, ipadx=5, sticky="e")
 
         # MainWrapper | Add calendar widget
@@ -88,6 +88,3 @@ class CalendarFrame(ctk.CTkFrame):
         # Generate calendar event on open status schedules
         for data in fetched_data:
             self.calendar.calevent_create(date=data['scheduled_on'], text=data['schedule_name'], tags=data['schedule_name'])
-
-    def CreateSchedule(self):
-        self.CreateSched = _create.CreationFrame()

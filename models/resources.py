@@ -13,6 +13,15 @@ _image_nav_path = _image_path + "nav-icons\\"
 __image_cache = {}
 
 class constants:
+    HOUR_VALUES = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]
+    MINUTE_VALUES = ["00", "15", "30", "45"]
+
+    PLACEHOLDER_TEACHER = "Choose a teacher"
+    PLACEHOLDER_DATE = 'Pick a date'
+    PLACEHOLDER_TIME = 'Pick a time'
+    PLACEHOLDER_TIME_START = 'Input session start'
+    PLACEHOLDER_TIME_END = 'Input session end'
+
 
     THEME_GREEN = ("#95D5B2", "#081c15")
     THEME_YELLOW = ("#Fdf0d5", "#081c15")
