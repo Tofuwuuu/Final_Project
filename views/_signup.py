@@ -5,10 +5,7 @@ Reference frame for main_init.py
 
 import customtkinter as ctk
 import re
-import base64
 import models.resources as res
-from models._cryptography import Security
-from models.db_system import DBSystem
 from views import init_app
 
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "Dark", "Light"
@@ -95,7 +92,7 @@ class SignUpFrame(ctk.CTkFrame):
     def confirm(self) -> None:
 
         # regex expression for email validation
-        regex = re.compile(res.constants.REGEX_EMAIL)
+        regex = re.compile(res.regex.REGEX_EMAIL)
 
         # Lambda expressions for simplified functions needed for this method
         format_str = lambda: (fname.title(), lname.title(), username.title())

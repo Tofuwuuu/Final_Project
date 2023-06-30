@@ -7,7 +7,6 @@ import customtkinter as ctk
 from views import init_app
 from views.teacher import teacher_app
 from views.student import student_app
-import base64
 from PIL import Image
 
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "Dark", "Light"
@@ -64,12 +63,7 @@ class LogInFrame(ctk.CTkFrame):
         #Forgot Password Label
         self.ForgotPass = ctk.CTkLabel(self, text="Forgot Password?", fg_color="transparent", text_color="black", font=ctk.CTkFont('Arial', 10, underline=True))
         self.ForgotPass.grid(row=11, column=0, padx=60, pady=0, sticky="e")
-    
 
-        #Remember Me CheckBox
-        self.RememberMe = ctk.CTkCheckBox(self, text="Remember Me", checkbox_height=17, checkbox_width=17, border_width=2, corner_radius=1, hover_color="#2B9348")
-        self.RememberMe.grid(row=12, column=0, padx=55, pady=0, sticky="w")
-        
         #space 
         self.space3 = ctk.CTkLabel(self, text=" ")
         self.space3.grid(row=13, column=0, padx=0, pady=7)

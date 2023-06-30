@@ -4,11 +4,10 @@ Reference frame for main_init.py
 """
 
 import customtkinter as ctk
-import tkinter as tk
 import models.resources as res
 import models.datetimeformatter as dtf
 
-class CreationFrame(ctk.CTkFrame):
+class CreationFrame(ctk.CTkToplevel):
 
     PLACEHOLDER_TEACHER = "Choose a teacher"
     PLACEHOLDER_DATE = 'Pick a date'
@@ -20,47 +19,27 @@ class CreationFrame(ctk.CTkFrame):
 
         # user data defined by the master
         self.user_data = self.master.user_data
-        
-        # Instance of the database inherit from the master application window
-        self.db_instance = self.master.db_instance
 
-
-
-        # load images with light and dark mode image
-        """ File directory pathing for images """
-        self.FacultyImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.faculty_dark), dark_image=res.fetch_image(res.images.nav_ico.faculty_light), size=(80, 80))
-        self.CalendarImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.calendar_dark), dark_image=res.fetch_image(res.images.nav_ico.calendar_light), size=(80, 80))
-        self.ConsultationImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.consultation_dark), dark_image=res.fetch_image(res.images.nav_ico.consultation_light), size=(80, 80))
-        self.NotifImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.notif_dark), dark_image=res.fetch_image(res.images.nav_ico.notif_light), size=(20, 20))
-        self.AlertNotifImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.alert_notif_dark), dark_image=res.fetch_image(res.images.nav_ico.alert_notif_light), size=(20, 20))
-        """ End of resource pathing """
+        # Window Configurations
+        self.geometry("500x600")
+        self.title(f"CvSU Consult - Create a Consultation Request")
+        self.iconbitmap(res.images.window_icon)
 
         # Styling as row-stretch
         self.grid_columnconfigure(0, weight=5)
         self.grid_rowconfigure(1, weight=1)
 
-        # Theme design, because I can't setup json file for custom theme installation using set_default_theme.
-        self.THEME_GREEN = self.master.THEME_GREEN
-        self.THEME_YELLOW = self.master.THEME_YELLOW
-        self.THEME_BLUE = self.master.THEME_BLUE
-        self.THEME_DARKGREEN = self.master.THEME_DARKGREEN
-        self.DEFAULT = self.master.DEFAULT
-
         # TitleWrapper for grouping the title bars
-        self.TitleWrapper = ctk.CTkFrame(master=self, fg_color=self.THEME_GREEN)
+        self.TitleWrapper = ctk.CTkFrame(master=self, fg_color="transparent")
         self.TitleWrapper.grid(row=0, columnspan=1, padx=20, pady=10, ipady=10, sticky="nsew")
         self.TitleWrapper.grid_columnconfigure(0, weight=1)
 
         # TitleWrapper | TitleWrapper Welcome Message
-        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Create a Consultation Request", text_color="black", font=ctk.CTkFont(family="Poppins", size=24, weight='bold'))
-        self.TitleLabel.grid(row=0, column=0, pady=20, padx=10, sticky="w")
-
-        # TitleWrapper | Notifications
-        self.NotifIcon = ctk.CTkButton(self.TitleWrapper, text=None, image=self.NotifImage, width=5, fg_color="transparent", hover_color="#Fdf0d5")
-        self.NotifIcon.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Create a Consultation Request", text_color=res.constants.THEME_TEXT, font=ctk.CTkFont(family=res.fonts.POPPINS, size=20, weight='bold'))
+        self.TitleLabel.grid(row=0, column=0, pady=20, padx=20, sticky="w")
 
         # MainWrapper
-        self.MainWrapper = ctk.CTkFrame(master=self, fg_color=self.THEME_GREEN)
+        self.MainWrapper = ctk.CTkFrame(master=self, fg_color=res.constants.THEME_GREEN)
         self.MainWrapper.grid(row=1, columnspan=1, padx=20, pady=10, sticky="nsew")
         self.MainWrapper.grid_columnconfigure(0, weight=1)
 
@@ -85,7 +64,7 @@ class CreationFrame(ctk.CTkFrame):
         self.RequestBody.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
 
         # Open RequestButton
-        self.FormHandlerStatus = ctk.CTkLabel(master=self.MainWrapper, text=None, text_color="Red", font=ctk.CTkFont(family="Poppins", size=14))
+        self.FormHandlerStatus = ctk.CTkLabel(master=self.MainWrapper, text=None, text_color="Red", font=ctk.CTkFont(family=res.fonts.POPPINS, size=14))
         self.FormHandlerStatus.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
 
         # Open RequestButton
@@ -122,13 +101,13 @@ class CreationFrame(ctk.CTkFrame):
     
     def CheckIfExistingRequest(self) -> bool:
         form_data = self.Getter()
-        user_generated_consultation_data = self.db_instance.FetchAccountConsultationHistory(self.user_data['account_id'])
+        user_generated_consultation_data = self.db_instance.FetchStudentHistory(self.user_data['student_id'])
         form_schedule_ids = [data['schedule_id'] for data in user_generated_consultation_data]
         teacher_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['username'] == form_data['teacher'] and str(data['scheduled_on']) == form_data['date'] and dtf.ConvertTime(data['open_at']) == form_data['time']]
         if teacher_data and teacher_data[0]['schedule_id'] in form_schedule_ids:
-            return True
-        else:
             return False
+        else:
+            return True
         
     
     def FormHandler(self) -> None:
@@ -161,7 +140,7 @@ class CreationFrame(ctk.CTkFrame):
         teacher_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['username'] == form_data['teacher'] and str(data['scheduled_on']) == form_data['date'] and dtf.ConvertTime(data['open_at']) == form_data['time']]
 
         gathered_data = {
-            "student": account_data["account_id"],
+            "student": account_data["student_id"],
             "schedule_id": teacher_data[0]["schedule_id"],
             "task_name": self.RequestTitle.get(),
             "task_desc": self.RequestBody.get(),
@@ -169,3 +148,7 @@ class CreationFrame(ctk.CTkFrame):
         }
 
         return self.db_instance.InsertConsultationRequest(gathered_data)
+
+def _dangerouslyInit(user_data: list) -> None:
+    app = CreationFrame(user_data=user_data)
+    app.mainloop()

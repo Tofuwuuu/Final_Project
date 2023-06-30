@@ -26,43 +26,25 @@ class CreationFrame(ctk.CTkFrame):
         # Instance of the database inherit from the master application window
         self.db_instance = self.master.db_instance
 
-
-
-        # load images with light and dark mode image
-        """ File directory pathing for images """
-        self.FacultyImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.faculty_dark), dark_image=res.fetch_image(res.images.nav_ico.faculty_light), size=(80, 80))
-        self.CalendarImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.calendar_dark), dark_image=res.fetch_image(res.images.nav_ico.calendar_light), size=(80, 80))
-        self.ConsultationImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.consultation_dark), dark_image=res.fetch_image(res.images.nav_ico.consultation_light), size=(80, 80))
-        self.NotifImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.notif_dark), dark_image=res.fetch_image(res.images.nav_ico.notif_light), size=(20, 20))
-        self.AlertNotifImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.alert_notif_dark), dark_image=res.fetch_image(res.images.nav_ico.alert_notif_light), size=(20, 20))
-        """ End of resource pathing """
-
         # Styling as row-stretch
         self.grid_columnconfigure(0, weight=5)
         self.grid_rowconfigure(1, weight=1)
 
-        # Theme design, because I can't setup json file for custom theme installation using set_default_theme.
-        self.THEME_GREEN = self.master.THEME_GREEN
-        self.THEME_YELLOW = self.master.THEME_YELLOW
-        self.THEME_BLUE = self.master.THEME_BLUE
-        self.THEME_DARKGREEN = self.master.THEME_DARKGREEN
-        self.DEFAULT = self.master.DEFAULT
-
         # TitleWrapper for grouping the title bars
-        self.TitleWrapper = ctk.CTkFrame(master=self, fg_color=self.THEME_GREEN)
+        self.TitleWrapper = ctk.CTkFrame(master=self, fg_color=res.constants.THEME_GREEN)
         self.TitleWrapper.grid(row=0, columnspan=1, padx=20, pady=10, ipady=10, sticky="nsew")
         self.TitleWrapper.grid_columnconfigure(0, weight=1)
 
         # TitleWrapper | TitleWrapper Welcome Message
-        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Create a Consultation Request", text_color="black", font=ctk.CTkFont(family="Poppins", size=24, weight='bold'))
+        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Create a Consultation Request", text_color="black", font=ctk.CTkFont(family=res.fonts.POPPINS, size=24, weight='bold'))
         self.TitleLabel.grid(row=0, column=0, pady=20, padx=10, sticky="w")
 
         # TitleWrapper | Notifications
-        self.NotifIcon = ctk.CTkButton(self.TitleWrapper, text=None, image=self.NotifImage, width=5, fg_color="transparent", hover_color="#Fdf0d5")
+        self.NotifIcon = ctk.CTkButton(self.TitleWrapper, text=None, image=self.master.NotifImage, width=5, fg_color="transparent", hover_color="#Fdf0d5")
         self.NotifIcon.grid(row=0, column=1, padx=10, pady=10, sticky="e")
 
         # MainWrapper
-        self.MainWrapper = ctk.CTkScrollableFrame(master=self, fg_color=self.THEME_GREEN)
+        self.MainWrapper = ctk.CTkScrollableFrame(master=self, fg_color=res.constants.THEME_GREEN)
         self.MainWrapper.grid(row=1, columnspan=1, padx=20, pady=10, sticky="nsew")
         self.MainWrapper.grid_columnconfigure(0, weight=1)
 
@@ -83,7 +65,7 @@ class CreationFrame(ctk.CTkFrame):
         self.ScheduleName.grid(row=3, column=0, padx=5, pady=5, sticky="nsew")
 
         # Open RequestButton
-        self.FormHandlerStatus = ctk.CTkLabel(master=self.MainWrapper, text=None, text_color="Red", font=ctk.CTkFont(family="Poppins", size=14))
+        self.FormHandlerStatus = ctk.CTkLabel(master=self.MainWrapper, text=None, text_color="Red", font=ctk.CTkFont(family=res.fonts.POPPINS, size=14))
         self.FormHandlerStatus.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
 
         # Open RequestButton
@@ -91,7 +73,7 @@ class CreationFrame(ctk.CTkFrame):
         self.CreateButton.grid(row=5, column=0, padx=5, pady=5, sticky="nsew")
 
     def Getter(self) -> dict:
-        legend = ['teacher_id', 'schedule_name', 'schedule_on', 'open_at', 'close_at', 'status']
+        legend = ['teacher_id', 'schedule_name', 'scheduled_on', 'open_at', 'close_at', 'status']
         _start = dtf.TimeBuilder(hours=self.ScheduleStart.hours(), minutes=self.ScheduleStart.minutes())
         _end = dtf.TimeBuilder(hours=self.ScheduleEnd.hours(), minutes=self.ScheduleEnd.minutes())
 
