@@ -110,6 +110,10 @@ class RequestFrame(ctk.CTkFrame):
             if status == 'Accepted':
                 if schedule_data[0]['schedule_status'] == 'Open':
                     self.db_instance.AcceptRequestOnDB(schedule_id=schedule_id, history_id=history_id)
+                    ignored_data = self.db_instance.FetchIgnoredRequests(self.user_data['teacher_id'], history_id)
+                    for data in ignored_data:
+                        self.db_instance.DenyRequestOnDB(history_id=data['history_id'])
+                    
                     self.ForgetAll()
 
             elif status == 'Denied':

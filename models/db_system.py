@@ -236,6 +236,23 @@ class DBSystem(DBConnect):
 
             # Making a list of dictionaries to represent data
             return [dict(zip(legend, idx)) for idx in data]
+        
+    def FetchIgnoredRequests(self, teacher_id: int, schedule_id: int) -> list | None:
+        """ ## Reference
+        #### returns all request history referencing the account_id"""
+            
+        with self.db.cursor() as cursor:
+            
+            # SQL query
+            query_script = f"SELECT con.history_id FROM consultation_histories AS con LEFT JOIN account_students AS student ON student.student_id = con.student_id LEFT JOIN faculty_schedules AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN account_teachers AS teacher ON teacher.teacher_id = sched.teacher_id WHERE sched.teacher_id = {teacher_id} AND con.history_id = {schedule_id}"
+            cursor.execute(query_script)
+            data = cursor.fetchall()
+            #Get the column names
+            legend = [column[0] for column in cursor.description]
+
+            # Making a list of dictionaries to represent data
+            return [dict(zip(legend, idx)) for idx in data]
+
 
 
     def InsertConsultationRequest(self, request_data: dict) -> bool:
