@@ -90,7 +90,7 @@ class DashboardFrame(ctk.CTkFrame):
         self.CalendarDashLabel = ctk.CTkLabel(self.CalendarDashWrapper, text="Calendar History", font=ctk.CTkFont(size=13, weight='bold'), text_color=res.constants.THEME_TEXT)
         self.CalendarDashLabel.grid(row=1, column=0, padx=25, pady=0)
         # Calendar Button
-        self.CalendarDashButton = ctk.CTkButton(self.CalendarDashWrapper, text="View All", command=lambda: self.master.SelectedPanel('faculty'), width=100, height=25, corner_radius=5, fg_color="#2B9348", hover_color="#55A630", font=ctk.CTkFont(size=12))
+        self.CalendarDashButton = ctk.CTkButton(self.CalendarDashWrapper, text="View All", command=lambda: self.master.SelectedPanel('calendar'), width=100, height=25, corner_radius=5, fg_color="#2B9348", hover_color="#55A630", font=ctk.CTkFont(size=12))
         self.CalendarDashButton.grid(row=2, column=0, padx=7, pady=10)
 
         # Large Consultation Image
@@ -100,7 +100,7 @@ class DashboardFrame(ctk.CTkFrame):
         self.ConsultationDashLabel = ctk.CTkLabel(self.ConsultationDashWrapper, text="My Consultations", font=ctk.CTkFont(size=13, weight='bold'), text_color=res.constants.THEME_TEXT)
         self.ConsultationDashLabel.grid(row=1, column=0, padx=25, pady=0)
         # Consultation Button
-        self.ConsultationDashButton = ctk.CTkButton(self.ConsultationDashWrapper, text="View All", command=lambda: self.master.SelectedPanel('faculty'), width=100, height=25, corner_radius=5, fg_color="#2B9348", hover_color="#55A630", font=ctk.CTkFont(size=12))
+        self.ConsultationDashButton = ctk.CTkButton(self.ConsultationDashWrapper, text="View All", command=lambda: self.master.SelectedPanel('history'), width=100, height=25, corner_radius=5, fg_color="#2B9348", hover_color="#55A630", font=ctk.CTkFont(size=12))
         self.ConsultationDashButton.grid(row=2, column=0, padx=7, pady=10)
 
         # Upcoming Consultation wrapper for grouping the dashboard utilities
@@ -114,7 +114,7 @@ class DashboardFrame(ctk.CTkFrame):
         self.UpcomingConsultationsLabel.grid(row=0, column=0, pady=20, padx=20, sticky="w")
 
         # ConWrapper | View Details Label
-        self.ViewDetailsButton = ctk.CTkButton(self.ConWrapper, fg_color="transparent", bg_color="transparent",text="View Details", text_color="gray", font=ctk.CTkFont(family=res.fonts.POPPINS, size=13, underline=True), command=lambda: self.master.SelectedPanel("consultation"), hover=None)
+        self.ViewDetailsButton = ctk.CTkButton(self.ConWrapper, fg_color="transparent", bg_color="transparent",text="View Details", text_color="gray", font=ctk.CTkFont(family=res.fonts.POPPINS, size=13, underline=True), command=lambda: self.master.SelectedPanel("history"), hover=None)
         self.ViewDetailsButton.grid(row=0, column=1, pady=20, padx=50, sticky="w")
 
         # SearchUtilityWrapper | For Searching Utilities

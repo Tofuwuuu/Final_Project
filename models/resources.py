@@ -21,6 +21,7 @@ class constants:
     THEME_TEXT = ("#2B9348", "#Fdf0d5")
     THEME_DEFAULT = ('white', '#242424')
     THEME_GRAY = ("gray75", "gray25")
+    THEME_BNW = ('black', 'white')
 
     WIN_SMALL_WIDTH = 900
     WIN_SMALL_HEIGHT = 600

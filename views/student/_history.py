@@ -28,13 +28,13 @@ class HistoryFrame(ctk.CTkFrame):
         self.grid_rowconfigure(1, weight=1)
 
         # TitleWrapper for grouping the title bars
-        self.TitleWrapper = ctk.CTkFrame(master=self, fg_color=res.constants.THEME_GREEN)
+        self.TitleWrapper = ctk.CTkFrame(master=self, fg_color=res.constants.THEME_DARKGREEN)
         self.TitleWrapper.grid(row=0, columnspan=1, padx=20, pady=10, ipady=10, sticky="nsew")
         self.TitleWrapper.grid_columnconfigure(0, weight=1)
 
         # TitleWrapper | TitleWrapper Welcome Message
-        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Consultation History", text_color="black", font=ctk.CTkFont(family=res.fonts.POPPINS, size=24, weight='bold'))
-        self.TitleLabel.grid(row=0, column=0, pady=20, padx=10, sticky="w")
+        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Consultation History", text_color=res.constants.THEME_YELLOW, font=ctk.CTkFont(family=res.fonts.POPPINS, size=25, weight='bold'))
+        self.TitleLabel.grid(row=0, column=0, pady=40, padx=30, sticky="w")
 
         # TitleWrapper | Notifications
         self.NotifIcon = ctk.CTkButton(self.TitleWrapper, text=None, image=self.master.NotifImage, width=5, fg_color="transparent", hover_color="#Fdf0d5")
@@ -152,7 +152,7 @@ class HistoryFrame(ctk.CTkFrame):
             # Inner Month
             ctk.CTkLabel(master=self._cache_inner_frame[idx], text=f"{account_history[idx]['scheduled_on'].strftime('%B')[0:3]}", text_color=res.constants.THEME_TEXT, font=ctk.CTkFont(family=res.fonts.POPPINS, size=18, weight='bold')).grid(row=1, column=0, sticky="nsew")
             #Inner Teacher Text
-            ctk.CTkLabel(master=self._cache_teacher_frame[idx], text=f"{account_history[idx]['student']}", text_color=res.constants.THEME_TEXT, font=ctk.CTkFont(family=res.fonts.POPPINS, size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
+            ctk.CTkLabel(master=self._cache_teacher_frame[idx], text=f"{account_history[idx]['prefix']}. {account_history[idx]['teacher']}", text_color=res.constants.THEME_TEXT, font=ctk.CTkFont(family=res.fonts.POPPINS, size=20, weight='bold')).grid(row=0, column=0, sticky="nsew")
 
 
             # timedelta lost my sanity. It is not even a timezone conversion wtf.
@@ -166,5 +166,4 @@ class HistoryFrame(ctk.CTkFrame):
             ctk.CTkLabel(master=self._cache_info_frame[idx], text=f"{account_history[idx]['task_name']}", text_color=("black", "white"), font=ctk.CTkFont(family=res.fonts.POPPINS, size=13, weight='bold')).grid(row=0, column=0, sticky="nsew")
             # Inner TimeSpan in TeacherWrapper
             ctk.CTkLabel(master=self._cache_info_frame[idx], text=f"{account_history[idx]['task_description']}", text_color=("black", "white"), font=ctk.CTkFont(family=res.fonts.POPPINS, size=12)).grid(row=1, column=0, padx=30, sticky="w")
-            # Button gg go next
-            ctk.CTkButton(master=self._cache_frame[idx], command=lambda:self.master.SelectedPanel("history"),image=self.master.GoNextImage, text=None, fg_color="transparent", hover=None).grid(row=0, column=4, padx=5, pady=10, sticky="e")
+    

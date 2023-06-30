@@ -105,13 +105,13 @@ class TeacherApp(ctk.CTk):
         self.Logout.grid(row=7, column=0, pady=5, padx=5, sticky="s")
 
         # Dashboard | Home Panel - Implementation and Configurations on ./_dashboard.py
-        self.DashboardPanel = DashboardFrame(master=self, corner_radius=0, fg_color="transparent")
+        self.DashboardPanel = DashboardFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
         # Dashboard | Home Panel - Implementation and Configurations on ./_dashboard.py
-        self.RequestPanel = RequestFrame(master=self, corner_radius=0, fg_color="transparent")
+        self.RequestPanel = RequestFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
         # Consultation | Consultation Panel - Implementation and Configurations on ./_consultation.py
-        self.HistoryPanel = HistoryFrame(master=self, corner_radius=0, fg_color="transparent")
+        self.HistoryPanel = HistoryFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
         # Settings | Settings Panel - Implementation and Configurations on ./_settings.py
-        self.CreationPanel = CreationFrame(master=self, corner_radius=0, fg_color="transparent")
+        self.CreationPanel = CreationFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
 
         self.UpdateData()
         # Default Window Frame on load

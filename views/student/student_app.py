@@ -8,7 +8,6 @@ from ._dashboard import DashboardFrame
 from ._faculty import FacultyFrame
 from ._calendar import CalendarFrame
 from ._history import HistoryFrame
-from ._create import CreationFrame
 from models.db_system import DBSystem
 from .. import init_app
 
@@ -55,7 +54,7 @@ class StudentApp(ctk.CTk):
 
         # Window Configurations
         self.geometry(f"{res.constants.WIN_WIDTH}x{res.constants.WIN_HEIGHT}")
-        self.title(f"CvSU Consult - Welcome, back {self.user_data['username']}.")
+        self.title(f"CvSU Consult - Welcome back, {self.user_data['username']}.")
         self.iconbitmap(res.images.window_icon)
 
         # set grid layout 1x2
@@ -78,24 +77,20 @@ class StudentApp(ctk.CTk):
         self.SlidePanelTitle.grid(row=1, column=0, padx=20, pady=20, sticky="nw")
 
         # Slide panel | Dashboard/Home Button
-        self.ToDashboard = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Dashboard", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_GRAY, image=self.HomeImage, anchor="w", command=lambda: self.SelectedPanel("dashboard"))
+        self.ToDashboard = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Dashboard", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_DARKGREEN, image=self.HomeImage, anchor="w", command=lambda: self.SelectedPanel("dashboard"))
         self.ToDashboard.grid(row=2, column=0, sticky="ew")
         
         # Slide panel | Faculty Member Button
-        self.ToFaculty = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Faculty Schedules", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_GRAY, image=self.SmallFacultyImage, anchor="w", command=lambda: self.SelectedPanel("faculty"))
+        self.ToFaculty = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Faculty Schedules", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_DARKGREEN, image=self.SmallFacultyImage, anchor="w", command=lambda: self.SelectedPanel("faculty"))
         self.ToFaculty.grid(row=3, column=0, sticky="ew")
 
         # Slide panel | Calendar Button
-        self.ToCalendar = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Calendar", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_GRAY, image=self.SmallCalendarImage, anchor="w", command=lambda: self.SelectedPanel("calendar"))
+        self.ToCalendar = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Calendar", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_DARKGREEN, image=self.SmallCalendarImage, anchor="w", command=lambda: self.SelectedPanel("calendar"))
         self.ToCalendar.grid(row=4, column=0, sticky="ew")
 
         # Slide panel | historys Button
-        self.ToHistory = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="My historys", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_GRAY, image=self.HistoryImage, anchor="w", command=lambda: self.SelectedPanel("history"))
+        self.ToHistory = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="My History", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_DARKGREEN, image=self.HistoryImage, anchor="w", command=lambda: self.SelectedPanel("history"))
         self.ToHistory.grid(row=5, column=0, sticky="ew")
-
-        # Slide panel | Creation Button
-        self.ToCreation = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Create history", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_GRAY, image=self.CreateImage, anchor="w", command=lambda: self.SelectedPanel("creation"))
-        self.ToCreation.grid(row=6, column=0, sticky="ew")
 
         # Slide panel | Theme Dropdown
         self.ThemeMode = ctk.CTkOptionMenu(self.SlidePanel, values=["Light", "Dark"], command=lambda mode: ctk.set_appearance_mode(mode), fg_color=res.constants.THEME_DARKGREEN, dropdown_fg_color=res.constants.THEME_DARKGREEN, button_color=res.constants.THEME_DARKGREEN, button_hover_color=res.constants.THEME_DARKGREEN, text_color=("black", "white"))
@@ -114,8 +109,7 @@ class StudentApp(ctk.CTk):
         self.CalendarPanel = CalendarFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
         # history | history Panel - Implementation and Configurations on ./_history.py
         self.HistoryPanel = HistoryFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
-        # Creation | Creation Panel - Implementation and Configurations on ./_Creation.py
-        self.CreationPanel = CreationFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
+       
 
         self.UpdateData()
         # Default Window Frame on load
@@ -129,8 +123,7 @@ class StudentApp(ctk.CTk):
             self.ToDashboard.configure(text="Dashboard", anchor="w")
             self.ToFaculty.configure(text="Faculty Schedules", anchor="w")
             self.ToCalendar.configure(text="Calendar", anchor="w")
-            self.ToHistory.configure(text="My history", anchor="w")
-            self.ToCreation.configure(text="Create historys", anchor="w")
+            self.ToHistory.configure(text="My History", anchor="w")
             self.Logout.configure(text="Logout", anchor="w")
             self.Logout.grid(row=8, column=0, pady=5, padx=5, sticky="s")
 
@@ -144,7 +137,6 @@ class StudentApp(ctk.CTk):
             self.ToFaculty.configure(text=None, anchor="center")
             self.ToCalendar.configure(text=None, anchor="center")
             self.ToHistory.configure(text=None, anchor="center")
-            self.ToCreation.configure(text=None, anchor="center")
             self.Logout.configure(text=None, anchor="center")
 
             self.ThemeMode.configure(values=[])
@@ -161,7 +153,7 @@ class StudentApp(ctk.CTk):
     def SelectedPanel(self, name) -> None:
 
         # Clean selected frame on call
-        frames = [self.ToDashboard, self.ToFaculty, self.ToCalendar, self.ToHistory, self.ToCreation]
+        frames = [self.ToDashboard, self.ToFaculty, self.ToCalendar, self.ToHistory]
         for f in frames:
             f.configure(fg_color="transparent")
 
@@ -171,7 +163,7 @@ class StudentApp(ctk.CTk):
                 # Display
                 self.DashboardPanel.grid(row=0, column=1, sticky="nsew")
                 # Show as "selected button"
-                self.ToDashboard.configure(fg_color=res.constants.THEME_GRAY)
+                self.ToDashboard.configure(fg_color=res.constants.THEME_YELLOW)
                 self.selected_panel = name
             else:
                 pass
@@ -183,7 +175,7 @@ class StudentApp(ctk.CTk):
                 # Display
                 self.FacultyPanel.grid(row=0, column=1, sticky="nsew")
                 # Show as "selected button"
-                self.ToFaculty.configure(fg_color=res.constants.THEME_GRAY)
+                self.ToFaculty.configure(fg_color=res.constants.THEME_YELLOW)
                 self.selected_panel = name
             else:
                 pass
@@ -195,7 +187,7 @@ class StudentApp(ctk.CTk):
                 # Display
                 self.CalendarPanel.grid(row=0, column=1, sticky="nsew")
                 # Show as "selected button"
-                self.ToCalendar.configure(fg_color=res.constants.THEME_GRAY)
+                self.ToCalendar.configure(fg_color=res.constants.THEME_YELLOW)
                 self.selected_panel = name
             else:
                 pass
@@ -208,26 +200,12 @@ class StudentApp(ctk.CTk):
                 # Display
                 self.HistoryPanel.grid(row=0, column=1, sticky="nsew")
                 # Show as "selected button"\
-                self.ToHistory.configure(fg_color=res.constants.THEME_GRAY)
+                self.ToHistory.configure(fg_color=res.constants.THEME_YELLOW)
                 self.selected_panel = name
             else:
                 pass
         else:
             self.HistoryPanel.grid_forget()
-
-        if name == "creation":
-            if self.selected_panel != name:
-                # Display
-                self.CreationPanel.grid(row=0, column=1, sticky="nsew")
-                self.CreationPanel.UpdateOpenFaculty()
-                # Show as "selected button"
-                self.ToCreation.configure(fg_color=res.constants.THEME_GRAY)
-                self.selected_panel = name
-            else:
-                pass
-        else:
-            self.CreationPanel.grid_forget()
-
 
     def UpdateData(self):
         self.DashboardPanel.UpdateUpcoming()

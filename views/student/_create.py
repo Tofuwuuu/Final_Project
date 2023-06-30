@@ -7,7 +7,7 @@ import customtkinter as ctk
 import models.resources as res
 import models.datetimeformatter as dtf
 
-class CreationFrame(ctk.CTkFrame):
+class CreationFrame(ctk.CTkToplevel):
 
     PLACEHOLDER_TEACHER = "Choose a teacher"
     PLACEHOLDER_DATE = 'Pick a date'
@@ -19,27 +19,24 @@ class CreationFrame(ctk.CTkFrame):
 
         # user data defined by the master
         self.user_data = self.master.user_data
-        
-        # Instance of the database inherit from the master application window
-        self.db_instance = self.master.db_instance
 
+        # Window Configurations
+        self.geometry("500x600")
+        self.title(f"CvSU Consult - Create a Consultation Request")
+        self.iconbitmap(res.images.window_icon)
 
         # Styling as row-stretch
         self.grid_columnconfigure(0, weight=5)
         self.grid_rowconfigure(1, weight=1)
 
         # TitleWrapper for grouping the title bars
-        self.TitleWrapper = ctk.CTkFrame(master=self, fg_color=res.constants.THEME_GREEN)
+        self.TitleWrapper = ctk.CTkFrame(master=self, fg_color="transparent")
         self.TitleWrapper.grid(row=0, columnspan=1, padx=20, pady=10, ipady=10, sticky="nsew")
         self.TitleWrapper.grid_columnconfigure(0, weight=1)
 
         # TitleWrapper | TitleWrapper Welcome Message
-        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Create a Consultation Request", text_color="black", font=ctk.CTkFont(family=res.fonts.POPPINS, size=24, weight='bold'))
-        self.TitleLabel.grid(row=0, column=0, pady=20, padx=10, sticky="w")
-
-        # TitleWrapper | Notifications
-        self.NotifIcon = ctk.CTkButton(self.TitleWrapper, text=None, image=self.master.NotifImage, width=5, fg_color="transparent", hover_color="#Fdf0d5")
-        self.NotifIcon.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+        self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Create a Consultation Request", text_color=res.constants.THEME_TEXT, font=ctk.CTkFont(family=res.fonts.POPPINS, size=20, weight='bold'))
+        self.TitleLabel.grid(row=0, column=0, pady=20, padx=20, sticky="w")
 
         # MainWrapper
         self.MainWrapper = ctk.CTkFrame(master=self, fg_color=res.constants.THEME_GREEN)
@@ -151,3 +148,7 @@ class CreationFrame(ctk.CTkFrame):
         }
 
         return self.db_instance.InsertConsultationRequest(gathered_data)
+
+def _dangerouslyInit(user_data: list) -> None:
+    app = CreationFrame(user_data=user_data)
+    app.mainloop()

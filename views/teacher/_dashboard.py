@@ -37,10 +37,6 @@ class DashboardFrame(ctk.CTkFrame):
         self.WelcomeLabel = ctk.CTkLabel(self.DashWrapper, text=f"Welcome, {self.user_data['username']}!", text_color=res.constants.THEME_TEXT, font=ctk.CTkFont(family=res.fonts.POPPINS, size=24, weight='bold'))
         self.WelcomeLabel.grid(row=0, column=0, pady=20, padx=10, sticky="w")
 
-        # DashWrapper | Calendar Icon
-        self.CalendarIcon = ctk.CTkButton(self.DashWrapper, text=None, image=self.master.SmallCalendarImage, width=5, fg_color="transparent", hover_color=(res.constants.THEME_YELLOW))
-        self.CalendarIcon.grid(row=0, column=1, padx=10, pady=10, sticky="e")
-
         # DashWrapper | Notifications
         self.NotifIcon = ctk.CTkButton(self.DashWrapper, text=None, image=self.master.NotifImage, width=5, fg_color="transparent", hover_color=(res.constants.THEME_YELLOW))
         self.NotifIcon.grid(row=0, column=2, padx=10, pady=10, sticky="e")
