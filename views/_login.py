@@ -7,6 +7,7 @@ import customtkinter as ctk
 from views import init_app
 from views.teacher import teacher_app
 from views.student import student_app
+import base64
 from PIL import Image
 
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "Dark", "Light"
@@ -61,9 +62,9 @@ class LogInFrame(ctk.CTkFrame):
         self.Password.grid(row=10, column=0, padx=10, pady=0)
 
         #Forgot Password Label
-        self.ForgotPass = ctk.CTkLabel(self, text="Forgot Password?", fg_color="transparent", text_color="black", font=ctk.CTkFont('Arial', 10, underline=True))
-        self.ForgotPass.grid(row=11, column=0, padx=60, pady=0, sticky="e")
-
+        self.ForgotPass = ctk.CTkButton(self, text="Forgot Password?", fg_color="transparent", text_color="black", font=ctk.CTkFont('Arial', 10, underline=True), command=self.ToResetPass, hover=None)
+        self.ForgotPass.grid(row=11, column=0, padx=10, pady=0, sticky="e")
+        
         #space 
         self.space3 = ctk.CTkLabel(self, text=" ")
         self.space3.grid(row=13, column=0, padx=0, pady=7)
@@ -95,6 +96,9 @@ class LogInFrame(ctk.CTkFrame):
     # Frame Methods
     def ToResetPass(self) -> None:
         self.destroy()
+
+        _changepasswordframe = init_app.ChangePasswordFrame(master=init_app.init, fg_color="#Fdf0d5")
+        _changepasswordframe.place(relx=0.5, rely=0.5, anchor="center")
     
     # Validate if user email and password is the same as the query data.    
     def ValidateUser(self) -> None:
