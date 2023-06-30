@@ -6,7 +6,6 @@ Reference frame for main_init.py
 import customtkinter as ctk
 import models.resources as res
 import datetime
-from views.student import _create
 
 class FacultyFrame(ctk.CTkFrame):
 
@@ -87,6 +86,9 @@ class FacultyFrame(ctk.CTkFrame):
         self.ConInfoWrapper.grid_columnconfigure(0, weight=1)
         self.ConInfoWrapper.grid_rowconfigure(0, weight=1)
 
+
+
+    # Show on the right side.
     def DisplayFacultyInfo(self, schedule_id: int, schedule: any) -> None:
         # Fetch account information
 
@@ -107,31 +109,28 @@ class FacultyFrame(ctk.CTkFrame):
         ConInfoFooter.grid_columnconfigure(0, weight=1)
         ConInfoFooter.grid_rowconfigure(0, weight=1)
 
-        # Icon
         ConInfoHeaderIcon = ctk.CTkLabel(master=ConInfoHeader, text=None, image=self.master.UserProfileImage)
         ConInfoHeaderIcon.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
-        # Name
+
         ConInfoHeaderLabel = ctk.CTkLabel(master=ConInfoHeader, text=f"{account_data[0]['username']}", font=ctk.CTkFont(family=res.fonts.POPPINS, size=20))
         ConInfoHeaderLabel.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
-        # Email address
+
         ConInfoHeaderLabel = ctk.CTkLabel(master=ConInfoHeader, text=f"{account_data[0]['email']}", font=ctk.CTkFont(family=res.fonts.POPPINS, size=20))
         ConInfoHeaderLabel.grid(row=2, column=0, padx=5, pady=0, sticky="nsew")
 
-        # Icon
         ConInfoHeaderIcon = ctk.CTkLabel(master=ConInfoHeader, text=None, image=self.master.UserProfileImage)
         ConInfoHeaderIcon.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
-        # Name
+
         ConInfoHeaderLabel = ctk.CTkLabel(master=ConInfoHeader, text=f"{account_data[0]['username']}", font=ctk.CTkFont(family=res.fonts.POPPINS, size=20))
         ConInfoHeaderLabel.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
-        # Email address
+
         ConInfoHeaderLabel = ctk.CTkLabel(master=ConInfoHeader, text=f"{account_data[0]['email']}", font=ctk.CTkFont(family=res.fonts.POPPINS, size=20))
         ConInfoHeaderLabel.grid(row=2, column=0, padx=5, pady=0, sticky="nsew")
 
-        # Schedule Name
         ConInfoBodyScheduleName = ctk.CTkLabel(master=ConInfoBody, text=f"{account_data[0]['schedule_name']}", font=ctk.CTkFont(family=res.fonts.POPPINS, size=15))
         ConInfoBodyScheduleName.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
-        
-        ConInfoRequest = ctk.CTkButton(master=ConInfoFooter, text="Request a Consult", image=self.master.SmallCalendarImage, command=self.CreateSchedule)
+
+        ConInfoRequest = ctk.CTkButton(master=ConInfoFooter, text="Request a Consult", image=self.master.SmallCalendarImage, command=self.master.ShowRequestWindow)
         ConInfoRequest.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
     def ForgetAll(self) -> None:
@@ -150,9 +149,6 @@ class FacultyFrame(ctk.CTkFrame):
         self._cache_inner_frame.clear()
         self._cache_teacher_frame.clear()
         self._cache_info_frame.clear()
-
-    def CreateSchedule(self):
-        self.CreateSched = _create.CreationFrame()
 
     def DisplayFaculty(self, asc: str = "Ascending") -> None:
             self.ForgetAll()

@@ -29,20 +29,20 @@ class RequestFrame(ctk.CTkFrame):
         self.grid_rowconfigure(1, weight=1)
 
         # Dashboard wrapper for grouping the dashboard utilities
-        self.DashWrapper = ctk.CTkFrame(master=self, fg_color="transparent")
-        self.DashWrapper.grid(row=0, columnspan=1, padx=20, pady=10, ipady=10, sticky="nsew")
-        self.DashWrapper.grid_columnconfigure(0, weight=1)
+        self.TitleWrapper = ctk.CTkFrame(master=self, fg_color="transparent")
+        self.TitleWrapper.grid(row=0, columnspan=1, padx=20, pady=10, ipady=10, sticky="nsew")
+        self.TitleWrapper.grid_columnconfigure(0, weight=1)
 
-        # DashWrapper | Dashboard Welcome Message
-        self.WelcomeLabel = ctk.CTkLabel(self.DashWrapper, text=f"Welcome, {self.user_data['username']}!", text_color=res.constants.THEME_TEXT, font=ctk.CTkFont(family=res.fonts.POPPINS, size=24, weight='bold'))
+        # TitleWrapper | Dashboard Welcome Message
+        self.WelcomeLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Welcome, {self.user_data['username']}!", text_color=res.constants.THEME_TEXT, font=ctk.CTkFont(family=res.fonts.POPPINS, size=24, weight='bold'))
         self.WelcomeLabel.grid(row=0, column=0, pady=20, padx=10, sticky="w")
 
-        # DashWrapper | Calendar Icon
-        self.CalendarIcon = ctk.CTkButton(self.DashWrapper, text=None, image=self.master.SmallCalendarImage, width=5, fg_color="transparent", hover_color=(res.constants.THEME_YELLOW))
-        self.CalendarIcon.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+        # TitleWrapper | Notifications
+        self.CreateIcon = ctk.CTkButton(self.TitleWrapper, command=self.master.ShowCreateWindow ,text=None, image=self.master.CreateImage, width=5, fg_color="transparent", hover_color=(res.constants.THEME_YELLOW))
+        self.CreateIcon.grid(row=0, column=1, padx=10, pady=10, sticky="e")
 
-        # DashWrapper | Notifications
-        self.NotifIcon = ctk.CTkButton(self.DashWrapper, text=None, image=self.master.NotifImage, width=5, fg_color="transparent", hover_color=(res.constants.THEME_YELLOW))
+        # TitleWrapper | Notifications
+        self.NotifIcon = ctk.CTkButton(self.TitleWrapper, text=None, image=self.master.NotifImage, width=5, fg_color="transparent", hover_color=(res.constants.THEME_YELLOW))
         self.NotifIcon.grid(row=0, column=2, padx=10, pady=10, sticky="e")
 
         # Upcoming Consultation wrapper for grouping the dashboard utilities
@@ -110,6 +110,10 @@ class RequestFrame(ctk.CTkFrame):
             if status == 'Accepted':
                 if schedule_data[0]['schedule_status'] == 'Open':
                     self.db_instance.AcceptRequestOnDB(schedule_id=schedule_id, history_id=history_id)
+                    ignored_data = self.db_instance.FetchIgnoredRequests(self.user_data['teacher_id'], history_id)
+                    for data in ignored_data:
+                        self.db_instance.DenyRequestOnDB(history_id=data['history_id'])
+                    
                     self.ForgetAll()
 
             elif status == 'Denied':
@@ -188,7 +192,6 @@ class RequestFrame(ctk.CTkFrame):
             ctk.CTkLabel(master=self._cache_teacher_frame[idx], text=f"Requested Time: {formatted_time}", text_color=("black", "white"), font=ctk.CTkFont(family=res.fonts.POPPINS, size=12)).grid(row=1, column=0, sticky="w")
             # Inner TimeSpan in TeacherWrapper
             ctk.CTkLabel(master=self._cache_info_frame[idx], text=f"{account_history[idx]['task_name']}", text_color=("black", "white"), font=ctk.CTkFont(family=res.fonts.POPPINS, size=14)).grid(row=0, column=0, padx=10, sticky="w")
-
             # Button gg go next
             ctk.CTkButton(master=self._cache_frame[idx], command=lambda key=idx: self.UpdateStatus(schedule_id=account_history[key]['schedule_id'], history_id=account_history[key]['history_id'], status='Accepted'),image=self.master.AcceptImage, text="Accept", fg_color="green", hover=None).grid(row=0, column=4, padx=5, pady=10, sticky="e")
             # Button gg go next

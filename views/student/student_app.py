@@ -8,6 +8,7 @@ from ._dashboard import DashboardFrame
 from ._faculty import FacultyFrame
 from ._calendar import CalendarFrame
 from ._history import HistoryFrame
+from ._request import RequestWindow
 from models.db_system import DBSystem
 from .. import init_app
 
@@ -109,11 +110,21 @@ class StudentApp(ctk.CTk):
         self.CalendarPanel = CalendarFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
         # history | history Panel - Implementation and Configurations on ./_history.py
         self.HistoryPanel = HistoryFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
-       
+        # Request Window - Implementation and Configurations on ./_request.py
+        self.RequestWindow = None
 
         self.UpdateData()
         # Default Window Frame on load
         self.SelectedPanel("dashboard")
+
+    # Implementation for calling the request window
+    def ShowRequestWindow(self):
+        
+        # Based on ctk documentation
+        if self.RequestWindow is None or not self.RequestWindow.winfo_exists():
+            self.RequestWindow = RequestWindow(self) # Create the window if its None or Destroyed
+        else:
+            self.RequestWindow.focus() # if window exists focus on it
 
     #There's probably no proper way to achieve this in python
     def ToggleBurgerMenu(self):

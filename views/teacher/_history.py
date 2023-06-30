@@ -36,9 +36,13 @@ class HistoryFrame(ctk.CTkFrame):
         self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Consultation History", text_color="black", font=ctk.CTkFont(family=res.fonts.POPPINS, size=24, weight='bold'))
         self.TitleLabel.grid(row=0, column=0, pady=20, padx=10, sticky="w")
 
+        # DashWrapper | Notifications
+        self.CreateIcon = ctk.CTkButton(self.TitleWrapper, command=self.master.ShowCreateWindow ,text=None, image=self.master.CreateImage, width=5, fg_color="transparent", hover_color=(res.constants.THEME_YELLOW))
+        self.CreateIcon.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+
         # TitleWrapper | Notifications
         self.NotifIcon = ctk.CTkButton(self.TitleWrapper, text=None, image=self.master.NotifImage, width=5, fg_color="transparent", hover_color="#Fdf0d5")
-        self.NotifIcon.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+        self.NotifIcon.grid(row=0, column=2, padx=10, pady=10, sticky="e")
 
         # MainWrapper
         self.MainWrapper = ctk.CTkFrame(master=self, fg_color="transparent")

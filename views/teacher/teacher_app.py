@@ -7,7 +7,7 @@ from models.db_system import DBSystem
 from ._dashboard import DashboardFrame
 from ._request import RequestFrame
 from ._history import HistoryFrame
-from ._create import CreationFrame
+from ._create import CreationWindow
 from .. import init_app
 import models.resources as res
 
@@ -48,7 +48,7 @@ class TeacherApp(ctk.CTk):
         self.SortImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.sort_light), dark_image=res.fetch_image(res.images.nav_ico.sort_dark), size=(20, 20))
         self.FilterImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.filter_light), dark_image=res.fetch_image(res.images.nav_ico.filter_dark), size=(20, 20))
         self.MenuSliderImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.menu_dark), dark_image=res.fetch_image(res.images.nav_ico.menu_light), size=(20, 20))
-        self.CreationImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.add_dark), dark_image=res.fetch_image(res.images.nav_ico.add_light), size=(20, 20))
+        self.CreateImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.add_dark), dark_image=res.fetch_image(res.images.nav_ico.add_light), size=(20, 20))
         self.LogoutImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.logout_dark), dark_image=res.fetch_image(res.images.nav_ico.logout_light), size=(20, 20))
         self.AcceptImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.check_dark), dark_image=res.fetch_image(res.images.nav_ico.check_light), size=(20, 20))
         self.DenyImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.deny_dark), dark_image=res.fetch_image(res.images.nav_ico.deny_light), size=(20, 20))
@@ -86,36 +86,39 @@ class TeacherApp(ctk.CTk):
         self.ToRequest = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Pending Requests", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_GRAY, image=self.HomeImage, anchor="w", command=lambda: self.SelectedPanel("request"))
         self.ToRequest.grid(row=3, column=0, sticky="ew")
 
-
         # Slide panel | History Button
         self.ToHistory = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="History", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_GRAY, image=self.HistoryImage, anchor="w", command=lambda: self.SelectedPanel("history"))
         self.ToHistory.grid(row=4, column=0, sticky="ew")
-
-        # Slide panel | Settings Button
-        self.ToCreation = ctk.CTkButton(self.SlidePanel, corner_radius=0, width=10, height=40, border_spacing=10, text="Open a consultation", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_GRAY, image=self.CreationImage, anchor="w", command=lambda: self.SelectedPanel("creation"))
-        self.ToCreation.grid(row=5, column=0, sticky="ew")
 
         # Slide panel | Theme Dropdown
         self.ThemeMode = ctk.CTkOptionMenu(self.SlidePanel, values=["Light", "Dark"], command=lambda mode: ctk.set_appearance_mode(mode), fg_color=res.constants.THEME_DARKGREEN, dropdown_fg_color=res.constants.THEME_DARKGREEN, button_color=res.constants.THEME_DARKGREEN, button_hover_color=res.constants.THEME_DARKGREEN, text_color=("black", "white"))
         self.ThemeMode.grid(row=6, column=0, padx=5, pady=5, sticky="s")
 
         # Slide panel | Logout Button
-
         self.Logout = ctk.CTkButton(self.SlidePanel, image=self.LogoutImage, width=10, corner_radius=0, height=10, border_spacing=10, text="Logout", fg_color="transparent", text_color=("gray10", "gray90"), hover_color=res.constants.THEME_GRAY, anchor="w", command=lambda: self.logout_handler())
         self.Logout.grid(row=7, column=0, pady=5, padx=5, sticky="s")
 
         # Dashboard | Home Panel - Implementation and Configurations on ./_dashboard.py
         self.DashboardPanel = DashboardFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
-        # Dashboard | Home Panel - Implementation and Configurations on ./_dashboard.py
+        # Request Frame | Home Panel - Implementation and Configurations on ./_request.py
         self.RequestPanel = RequestFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
-        # Consultation | Consultation Panel - Implementation and Configurations on ./_consultation.py
+        # History | History Panel - Implementation and Configurations on ./_history.py
         self.HistoryPanel = HistoryFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
-        # Settings | Settings Panel - Implementation and Configurations on ./_settings.py
-        self.CreationPanel = CreationFrame(master=self, corner_radius=0, fg_color=res.constants.THEME_DEFAULT)
+        # Create Window | Create schedule window 
+        self.CreateWindow = None
 
         self.UpdateData()
         # Default Window Frame on load
         self.SelectedPanel("dashboard")
+
+    # Implementation for calling the request window
+    def ShowCreateWindow(self):
+        
+        # Based on ctk documentation
+        if self.CreateWindow is None or not self.CreateWindow.winfo_exists():
+            self.CreateWindow = CreationWindow(self) # Create the window if its None or Destroyed
+        else:
+            self.CreateWindow.focus() # if window exists focus on it
 
     #There's probably no proper way to achieve this in python
     def ToggleBurgerMenu(self):
@@ -125,7 +128,6 @@ class TeacherApp(ctk.CTk):
             self.ToDashboard.configure(text="Dashboard", anchor="w")
             self.ToRequest.configure(text="Request", anchor="w")
             self.ToHistory.configure(text="My History", anchor="w")
-            self.ToCreation.configure(text="Settings", anchor="w")
             self.Logout.configure(text="Logout", anchor="w")
             self.Logout.grid(row=8, column=0, pady=5, padx=5, sticky="s")
 
@@ -138,7 +140,6 @@ class TeacherApp(ctk.CTk):
             self.ToDashboard.configure(text=None, anchor="center")
             self.ToRequest.configure(text=None, anchor="w")
             self.ToHistory.configure(text=None, anchor="center")
-            self.ToCreation.configure(text=None, anchor="center")
             self.Logout.configure(text=None, anchor="center")
 
             self.ThemeMode.configure(values=[])
@@ -155,7 +156,7 @@ class TeacherApp(ctk.CTk):
     def SelectedPanel(self, name) -> None:
 
         # Clean selected frame on call
-        frames = [self.ToDashboard, self.ToRequest, self.ToHistory, self.ToCreation]
+        frames = [self.ToDashboard, self.ToRequest, self.ToHistory]
         for f in frames:
             f.configure(fg_color="transparent")
 
@@ -200,18 +201,6 @@ class TeacherApp(ctk.CTk):
                 pass
         else:
             self.HistoryPanel.grid_forget()
-
-        if name == "creation":
-            if self.selected_panel != name:
-                # Display
-                self.CreationPanel.grid(row=0, column=1, sticky="nsew")
-                # Show as "selected button"
-                self.ToCreation.configure(fg_color=res.constants.THEME_GRAY)
-                self.selected_panel = name
-            else:
-                pass
-        else:
-            self.CreationPanel.grid_forget()
 
     def UpdateData(self):
         self.DashboardPanel.UpdateUpcoming()

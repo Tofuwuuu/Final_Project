@@ -65,7 +65,7 @@ VALUES (200000, 'Mr','John', 'Moe', 'John Moe', 'johnmoe@gmail.com', 300002),
        (200001, 'Mr', 'Nortz', 'Alingod', 'Nortz Alingod', 'nortzalingod@gmail.com', 300003),
        (200002, 'Ms', 'Jackie', 'Murallon', 'Jackie Murallon', 'jackiemurallon@gmail.com', 300004),
        (200003, 'Mr', 'Antonio', 'Gaspar', 'Antonio Gaspar', 'antoniogaspar@gmail.com', 300005),
-       (200004, 'Mr', 'Kenver', 'Maliyan', 'Kenver Maliyan', 'Kenver Maliyan@gmail.com', 300006),
+       (200004, 'Mr', 'Kenver', 'Maliyan', 'Kenver Maliyan', 'kenvermaliyan@gmail.com', 300006),
        (200005, 'Mrs', 'Aliyana', 'Samonte', 'Aliyana Samonte', 'aliyanasamonte@gmail.com', 300007),
        (200006, 'Mr', 'Samson', 'Miguel', 'Samson Miguel', 'samsonmiguel@gmail.com', 300008);
 
@@ -191,3 +191,5 @@ VALUES
     (2000048, 'Research Assistance', 'Looking for assistance in conducting research', 100001, 1000045, 'Accepted'),
     (2000049, 'Exam Proctoring', 'Need a proctor for an upcoming exam', 100001, 1000041, 'Accepted');
     
+    SELECT teacher.username, teacher.email, teacher.first_name, teacher.last_name, sched.* FROM account_teachers AS teacher RIGHT JOIN faculty_schedules as sched ON teacher.teacher_id = sched.teacher_id WHERE sched.status = 'Open' AND CONVERT(sched.scheduled_on, DATE) >= CURDATE() ORDER BY sched.scheduled_on ASC;
+    SELECT con.history_id, con.task_name, con.task_description, student.username AS student, teacher.username AS teacher, teacher.email AS teacher_email, teacher.prefix AS prefix, con.status, sched.schedule_id, sched.schedule_name, sched.scheduled_on, sched.open_at, sched.close_at FROM consultation_histories AS con LEFT JOIN account_students AS student ON student.student_id = con.student_id LEFT JOIN faculty_schedules AS sched ON sched.schedule_id = con.schedule_id LEFT JOIN account_teachers AS teacher ON teacher.teacher_id = sched.teacher_id WHERE student.student_id = 100000 ORDER BY sched.scheduled_on DESC;

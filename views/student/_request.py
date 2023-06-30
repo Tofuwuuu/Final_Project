@@ -7,11 +7,9 @@ import customtkinter as ctk
 import models.resources as res
 import models.datetimeformatter as dtf
 
-class CreationFrame(ctk.CTkToplevel):
+class RequestWindow(ctk.CTkToplevel):
 
-    PLACEHOLDER_TEACHER = "Choose a teacher"
-    PLACEHOLDER_DATE = 'Pick a date'
-    PLACEHOLDER_TIME = 'Pick a time'
+
 
 
     def __init__(self, *args, **kwargs):
@@ -19,6 +17,8 @@ class CreationFrame(ctk.CTkToplevel):
 
         # user data defined by the master
         self.user_data = self.master.user_data
+        # db_instance
+        self.db_instance = self.master.db_instance
 
         # Window Configurations
         self.geometry("500x600")
@@ -44,15 +44,15 @@ class CreationFrame(ctk.CTkToplevel):
         self.MainWrapper.grid_columnconfigure(0, weight=1)
 
         # Teacher
-        self.TeacherEntry = ctk.CTkOptionMenu(master=self.MainWrapper, command=lambda value: self.UpdateOpenDate(value), values=[self.PLACEHOLDER_TEACHER])
+        self.TeacherEntry = ctk.CTkOptionMenu(master=self.MainWrapper, command=lambda value: self.UpdateOpenDate(value), values=[res.constants.PLACEHOLDER_TEACHER])
         self.TeacherEntry.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         # Open Dates
-        self.TeacherOpenDateMenu = ctk.CTkOptionMenu(master=self.MainWrapper, command=lambda value: self.UpdateOpenTime(value), values=[self.PLACEHOLDER_DATE], state='disabled')
+        self.TeacherOpenDateMenu = ctk.CTkOptionMenu(master=self.MainWrapper, command=lambda value: self.UpdateOpenTime(value), values=[res.constants.PLACEHOLDER_DATE], state='disabled')
         self.TeacherOpenDateMenu.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
 
         # Open Dates
-        self.TeacherOpenTimeMenu = ctk.CTkOptionMenu(master=self.MainWrapper, values=[self.PLACEHOLDER_TIME], state='disabled')
+        self.TeacherOpenTimeMenu = ctk.CTkOptionMenu(master=self.MainWrapper, values=[res.constants.PLACEHOLDER_TIME], state='disabled')
         self.TeacherOpenTimeMenu.grid(row=2, column=0, padx=5, pady=5, sticky="nsew")
 
         # Task Name
@@ -70,7 +70,11 @@ class CreationFrame(ctk.CTkToplevel):
         # Open RequestButton
         self.RequestButton = ctk.CTkButton(master=self.MainWrapper, command=self.FormHandler, text="Place a request")
         self.RequestButton.grid(row=6, column=0, padx=5, pady=5, sticky="nsew")
-    
+
+        # Call Open Faculty name
+        self.UpdateOpenFaculty()
+
+    # Fetch open faculty names
     def UpdateOpenFaculty(self) -> None:
         open_data = self.db_instance.FetchOpenFacultySchedules()
         teacher_names = {data['username'] for data in open_data}
@@ -80,7 +84,7 @@ class CreationFrame(ctk.CTkToplevel):
         open_data = self.db_instance.FetchOpenFacultySchedules()
         teacher_entry = value
 
-        if isinstance(teacher_entry, (str)) and teacher_entry != self.PLACEHOLDER_TEACHER:
+        if isinstance(teacher_entry, (str)) and teacher_entry != res.constants.PLACEHOLDER_TEACHER:
 
             date_data = [str(data['scheduled_on']) for data in open_data if data['username'] == teacher_entry]
             self.TeacherOpenDateMenu.configure(values=date_data, state="NORMAL")
@@ -90,7 +94,7 @@ class CreationFrame(ctk.CTkToplevel):
         teacher_entry = self.TeacherEntry.get()
         date_entry = value
 
-        if isinstance(date_entry, (str)) and date_entry != self.PLACEHOLDER_DATE:
+        if isinstance(date_entry, (str)) and date_entry != res.constants.PLACEHOLDER_DATE:
             time_data = [dtf.ConvertTime(data['open_at']) for data in open_data if data['username'] == teacher_entry and str(data['scheduled_on']) == date_entry]
             self.TeacherOpenTimeMenu.configure(values=time_data, state="NORMAL")
 
@@ -103,10 +107,16 @@ class CreationFrame(ctk.CTkToplevel):
         form_data = self.Getter()
         user_generated_consultation_data = self.db_instance.FetchStudentHistory(self.user_data['student_id'])
         form_schedule_ids = [data['schedule_id'] for data in user_generated_consultation_data]
+        print(form_data)
+        print(form_schedule_ids)
         teacher_data = [data for data in self.db_instance.FetchOpenFacultySchedules() if data['username'] == form_data['teacher'] and str(data['scheduled_on']) == form_data['date'] and dtf.ConvertTime(data['open_at']) == form_data['time']]
+
+        print(teacher_data)
         if teacher_data and teacher_data[0]['schedule_id'] in form_schedule_ids:
+            print("True")
             return False
         else:
+            print("False")
             return True
         
     
@@ -114,11 +124,11 @@ class CreationFrame(ctk.CTkToplevel):
         self.FormHandlerStatus.configure(text_color='red')
         form_data = self.Getter()
 
-        if form_data['teacher'] == self.PLACEHOLDER_TEACHER:
+        if form_data['teacher'] == res.constants.PLACEHOLDER_TEACHER:
             pass
-        elif form_data['date'] == self.PLACEHOLDER_DATE:
+        elif form_data['date'] == res.constants.PLACEHOLDER_DATE:
             self.FormHandlerStatus.configure(text="Error: you have not yet selected a date.")
-        elif form_data['time'] == self.PLACEHOLDER_TIME:
+        elif form_data['time'] == res.constants.PLACEHOLDER_TIME:
             self.FormHandlerStatus.configure(text="Error: you have not yet selected a time.")
         elif form_data['title'] == '':
             self.FormHandlerStatus.configure(text="Error: no title.")
@@ -148,7 +158,3 @@ class CreationFrame(ctk.CTkToplevel):
         }
 
         return self.db_instance.InsertConsultationRequest(gathered_data)
-
-def _dangerouslyInit(user_data: list) -> None:
-    app = CreationFrame(user_data=user_data)
-    app.mainloop()
