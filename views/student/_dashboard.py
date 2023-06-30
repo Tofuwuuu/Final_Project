@@ -113,10 +113,6 @@ class DashboardFrame(ctk.CTkFrame):
         self.UpcomingConsultationsLabel = ctk.CTkLabel(self.ConWrapper, text="Upcoming Consultations", text_color=res.constants.THEME_TEXT, font=ctk.CTkFont(family=res.fonts.POPPINS, size=20, weight='bold'))
         self.UpcomingConsultationsLabel.grid(row=0, column=0, pady=20, padx=20, sticky="w")
 
-        # ConWrapper | View Details Label
-        self.ViewDetailsButton = ctk.CTkButton(self.ConWrapper, fg_color="transparent", bg_color="transparent",text="View Details", text_color="gray", font=ctk.CTkFont(family=res.fonts.POPPINS, size=13, underline=True), command=lambda: self.master.SelectedPanel("history"), hover=None)
-        self.ViewDetailsButton.grid(row=0, column=1, pady=20, padx=50, sticky="w")
-
         # SearchUtilityWrapper | For Searching Utilities
         self.SearchUtilityWrapper = ctk.CTkFrame(master=self.ConWrapper, fg_color="transparent")
         self.SearchUtilityWrapper.grid(row=1, column=0, columnspan=1, padx=15, pady=15, sticky="nsew")
