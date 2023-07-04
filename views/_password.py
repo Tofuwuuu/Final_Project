@@ -5,7 +5,6 @@ Reference frame for main_init.py
 
 import customtkinter as ctk
 import models.resources as res
-import models.datetimeformatter as dtf
 from views import init_app
 from tkinter import messagebox
 
@@ -17,7 +16,9 @@ class ChangePasswordFrame(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
+        """ File directory pathing for images """
+        self.BackImage = ctk.CTkImage(light_image=res.fetch_image(res.images.nav_ico.back_dark), dark_image=res.fetch_image(res.images.nav_ico.back_light), size=(20, 20))
+        """ End of resource pathing """
 
         # Styling as row-stretch
         self.grid_columnconfigure(0, weight=5)
@@ -28,9 +29,13 @@ class ChangePasswordFrame(ctk.CTkFrame):
         self.TitleWrapper.grid(row=0, columnspan=1, padx=20, pady=10, ipady=10, sticky="nsew")
         self.TitleWrapper.grid_columnconfigure(0, weight=1)
 
+        # TitleWrapper | Back Button
+        self.BackButton = ctk.CTkButton(self.TitleWrapper, text=" ", image=self.BackImage, hover=None, fg_color="transparent", command=self.ExitFrame)
+        self.BackButton.grid(row=0, column=0, pady=15, padx=100, sticky="w")
+
         # TitleWrapper | TitleWrapper Welcome Message
         self.TitleLabel = ctk.CTkLabel(self.TitleWrapper, text=f"Change Your Password", text_color=res.constants.THEME_TEXT, font=ctk.CTkFont(family=res.fonts.POPPINS, size=20, weight='bold'))
-        self.TitleLabel.grid(row=0, column=0, pady=15, padx=100, sticky="w")
+        self.TitleLabel.grid(row=1, column=0, pady=0, padx=100, sticky="w")
 
         # MainWrapper
         self.MainWrapper = ctk.CTkFrame(master=self, fg_color=res.constants.THEME_GREEN)

@@ -86,6 +86,8 @@ class images:
         deny_light = _image_nav_path + "deny-light.png"
         pending_dark = _image_nav_path + "pending-dark.png"
         pending_light = _image_nav_path + "pending-light.png"
+        back_dark = _image_nav_path + "back-dark.png"
+        back_light = _image_nav_path + "back-light.png"
 
     #ico
     window_icon = _image_path + "window-icon.ico"
